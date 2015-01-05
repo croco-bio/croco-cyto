@@ -53,7 +53,6 @@ public class NetworkTree extends JTree implements TreeSelectionListener,DragGest
 			e.printStackTrace();
 		}
 		NetworkHierachyTreeNode root = new NetworkHierachyTreeNode(rootNode);
-
 		
 
 		DefaultTreeModel model = new DefaultTreeModel(root);
@@ -72,20 +71,26 @@ public class NetworkTree extends JTree implements TreeSelectionListener,DragGest
 	}
 	public NetworkHierachyTreeNode getNetwork(String path){
 		NetworkHierachyTreeNode rootNode = (NetworkHierachyTreeNode) this.getModel().getRoot();
-
 		String[] tokens = path.split("/");
-		
 		for(String token : tokens){
+		    token = token.trim().toLowerCase();
+		    
 			if(token.length() == 0) continue;
 			NetworkHierachyTreeNode newRoot = null;
+			List<String> children = new ArrayList();
 			for(int i = 0 ; i< rootNode.getChildCount() ; i++){
 				NetworkHierachyTreeNode child =  (NetworkHierachyTreeNode) rootNode.getChildAt(i);
-				if (child.getOperatorable().getName().equals(token)) {
+				children.add(child.getOperatorable().getName().trim().toLowerCase());
+				if (child.getOperatorable().getName().trim().toLowerCase().equals(token)) {
 					newRoot = child;
 					break;
 				}
 			}
-			if ( newRoot == null) return null;
+			if ( newRoot == null) 
+			{
+			    CroCoLogger.getLogger().info("Stop at:" + token + " " + children);
+			    return null;
+			}
 			rootNode = newRoot;
 		}
 		

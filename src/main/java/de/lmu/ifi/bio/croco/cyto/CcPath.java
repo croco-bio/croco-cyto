@@ -271,13 +271,16 @@ public class CcPath extends AbstractWebServiceGUIClient  implements NetworkImpor
 	            public void mouseClicked(MouseEvent e) {
 	            	NetworkOperationNode parent = ((NetworkOperatorTreeNode)operations.getModel().getRoot()).getOperatorable();
 					try{
-		            	
+					    LoggerFactory.getLogger(CcPath.class).error("Set transfer node");
 						Transfer transferOperation = new Transfer();
 		            	transferOperation.setInput(Transfer.OrthologMappingInformation, QueryServiceWrapper.getInstance().getService().getOrthologMappingInformation(null, Species.Human, Species.Mouse));
 		    			transferOperation.setInput(Transfer.OrthologRepository,OrthologRepository.getInstance( QueryServiceWrapper.getInstance().getService()));
 		            	
 		            	NetworkOperationNode transfer = new NetworkOperationNode(parent,Species.Human.getTaxId(),transferOperation);
-		            	NetworkHierachyTreeNode mel = networkTree.getNetwork("M. Musculus/Context-Specific Networks/Open Chromatin (TFBS)/DNase I Hypersensitive/High Confidence/All-Motifs/MEL");
+		            	
+		            	LoggerFactory.getLogger(CcPath.class).error("Read MEL");
+                        
+		            	NetworkHierachyTreeNode mel = networkTree.getNetwork("M. musculus/Context-Specific Networks/Open Chromatin (TFBS)/DNase I Hypersensitive sites (DNase)/High Confidence/All-Motifs/MEL");
 		            	
 		    			
 						NetworkOperationNode melInterst = new NetworkOperationNode(parent,Species.Mouse.getTaxId(),new Intersect());
@@ -285,7 +288,9 @@ public class CcPath extends AbstractWebServiceGUIClient  implements NetworkImpor
 						operations.addNetworks(networkTree.getLeafs(mel), melInterst,false);
 						transfer.addChild(melInterst);
 						
-						NetworkHierachyTreeNode k562 = networkTree.getNetwork("H. Sapiens/Context-Specific Networks/Open Chromatin (TFBS)/DNase I Hypersensitive/High Confidence/All-Motifs/K562");
+						LoggerFactory.getLogger(CcPath.class).error("Read K562");
+                        
+						NetworkHierachyTreeNode k562 = networkTree.getNetwork("H. sapiens/Context-Specific Networks/Open Chromatin (TFBS)/DNase I Hypersensitive sites (DNase)/High Confidence/All-Motifs/K562");
 						
 						NetworkOperationNode k562Interest= new NetworkOperationNode(parent,Species.Human.getTaxId(),new Intersect());
 						
@@ -298,8 +303,8 @@ public class CcPath extends AbstractWebServiceGUIClient  implements NetworkImpor
 			            
 			            operations.expandAll(true);
 					}catch(Exception ex){
-						LoggerFactory.getLogger(CcPath.class).error(ex.getMessage());
-						JOptionPane.showMessageDialog(null, "Could not load example","Error",  JOptionPane.WARNING_MESSAGE);
+						LoggerFactory.getLogger(CcPath.class).error(ex.toString());
+						JOptionPane.showMessageDialog(null, String.format("Could not load example (%s)",ex.toString()),"Error",  JOptionPane.WARNING_MESSAGE);
 					}
 	            }
 	      });
@@ -568,7 +573,7 @@ public class CcPath extends AbstractWebServiceGUIClient  implements NetworkImpor
 							}
 						});
 						try{
-						network = OperationUtil.process(QueryServiceWrapper.getInstance().getService(),root,pi);
+						    network = OperationUtil.process(QueryServiceWrapper.getInstance().getService(),root,pi);
 						}catch(Exception e){
 							LoggerFactory.getLogger(CcPath.class).error("Cannot process",e);
 						}

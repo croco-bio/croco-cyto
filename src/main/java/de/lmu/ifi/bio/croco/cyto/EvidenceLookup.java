@@ -53,7 +53,7 @@ public class EvidenceLookup  extends AbstractCyAction {
 			try {
 				uri = new URI(
 						String.format(
-								"%s?factor=%s&target=%s",CytoscapeProperties.urlEvidenceLookUp,
+								"%s?factor=%s&target=%s",CytoscapeProperties.getProperties().get(CytoscapeProperties.urlEvidenceLookUp).toString(),
 								currentNetwork.getRow(sourceNode).get("Name", String.class),
 								currentNetwork.getRow(targetNode).get("Name", String.class) 
 								)
