@@ -14,6 +14,9 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Enumeration;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Stack;
@@ -25,12 +28,16 @@ import javax.swing.SwingUtilities;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.DefaultTreeModel;
+import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
 import javax.swing.tree.TreeSelectionModel;
 
 import de.lmu.ifi.bio.crco.connector.QueryService;
+import de.lmu.ifi.bio.crco.data.CroCoNode;
 import de.lmu.ifi.bio.crco.data.NetworkHierachyNode;
 import de.lmu.ifi.bio.crco.util.CroCoLogger;
+import de.lmu.ifi.bio.crco.util.NetworkOntology;
+import de.lmu.ifi.bio.crco.util.NetworkOntology.LeafNode;
 import de.lmu.ifi.bio.croco.cyto.ui.transferable.NetworkHierachyNodeTransferable;
 import de.lmu.ifi.bio.croco.cyto.util.QueryServiceWrapper;
 
@@ -38,22 +45,110 @@ import de.lmu.ifi.bio.croco.cyto.util.QueryServiceWrapper;
 public class NetworkTree extends JTree implements TreeSelectionListener,DragGestureListener,DragSourceListener{
 
 	private static final long serialVersionUID = 1L;
+	CroCoNode origRoot;
+	private static HashMap<CroCoNode,TreeNode> treeNodeMapping = new HashMap<CroCoNode,TreeNode> ();
+    
+	public class NetworkHierachyTreeNode implements TreeNode {
+
+	    private CroCoNode operatorable;
 
 
+	    
+	    public CroCoNode getOperatorable(){
+	        return operatorable;
+	    }
+
+	    
+	    public NetworkHierachyTreeNode(CroCoNode operatorable){
+	        this.operatorable = operatorable;
+	    }
+
+	    
+
+	    @Override
+	    public TreeNode getChildAt(int childIndex) {
+	        CroCoNode childNode = operatorable.getChildren().get(childIndex);
+	        return getTreeNode(childNode);
+	    }
+
+
+	    @Override
+	    public int getChildCount() {
+	        if ( operatorable.getChildren() == null)
+	        {
+	            try
+	            {
+	                operatorable.initChildren(origRoot);
+	            }catch(Exception e)
+    	        {
+   	                throw new RuntimeException(e);
+    	        }
+	        }
+	        return operatorable.getChildren().size();
+	    }
+
+
+	    @Override
+	    public TreeNode getParent() {
+	        return null;
+	    }
+
+
+	    @Override
+	    public int getIndex(TreeNode node) {
+	        return 0;
+	    }
+
+	    @Override
+	    public boolean getAllowsChildren() {
+	        return true;
+	    }
+
+	    @Override
+	    public String toString(){
+	        if ( this.operatorable == null) return "<<null>>";
+	        return this.operatorable.toString();
+	    }
+	    
+	    @Override
+	    public boolean isLeaf() {
+	        
+	        return operatorable instanceof LeafNode;
+	    }
+
+	    @Override
+	    public Enumeration children() {
+	        return Collections.enumeration(this.operatorable.getChildren());
+	        
+	        //return this.operatorable.getChildren().iterator();
+	    }
+	    
+	    
+	    public TreeNode getTreeNode(CroCoNode node){
+	        if (!treeNodeMapping.containsKey(node)){
+	            treeNodeMapping.put(node,new NetworkHierachyTreeNode(node));
+	        }
+	        return treeNodeMapping.get(node);
+	    }
+	    
+	}
 	private DragSource dragSource = null;
 
 	public NetworkTree()  {
 
 		CroCoLogger.getLogger().info("Load root");
 
-		NetworkHierachyNode rootNode = null;
+		CroCoNode rootNode = null;
 		try{
-			rootNode = QueryServiceWrapper.getInstance().getService().getNetworkHierachy(null);
+			CroCoNode root = QueryServiceWrapper.getInstance().getService().getNetworkOntology();
+			this.origRoot = root;
+			rootNode= new CroCoNode(root);
+			rootNode.setNetworks(root.getNetworks());
 		}catch(Exception e){
-			e.printStackTrace();
+			throw new RuntimeException(e);
 		}
-		NetworkHierachyTreeNode root = new NetworkHierachyTreeNode(rootNode);
 		
+		NetworkHierachyTreeNode root = new NetworkHierachyTreeNode(rootNode);
 
 		DefaultTreeModel model = new DefaultTreeModel(root);
 
@@ -104,16 +199,14 @@ public class NetworkTree extends JTree implements TreeSelectionListener,DragGest
 		HashSet<Integer> taxIds = new HashSet<Integer>();
 		while(!nodes.isEmpty()){
 			NetworkHierachyTreeNode top = nodes.pop();
-			/*
-			if (  top.getOperatorable().getChildren() == null){
-				Helper.loadChildren((OperatorNode)top);
-			}
-			 */
-			if ( top.isLeaf() ) {
-				taxIds.add(top.getOperatorable().getTaxId());
-				if ( top.getOperatorable() instanceof NetworkHierachyNode)
 
-					leafs.add( new  NetworkHierachyNode((NetworkHierachyNode)  top.getOperatorable()));
+			if ( top.isLeaf() ) {
+			    NetworkHierachyNode nh = top.getOperatorable().getNetworks().iterator().next();
+			    
+				taxIds.add(nh.getTaxId());
+				if ( top.getOperatorable() instanceof CroCoNode)
+
+					leafs.add( new  NetworkHierachyNode( nh));
 			}else{
 				for(int i = 0 ; i< top.getChildCount(); i++){
 					nodes.add((NetworkHierachyTreeNode)(top.getChildAt(i)));
@@ -137,16 +230,14 @@ public class NetworkTree extends JTree implements TreeSelectionListener,DragGest
 
 		NetworkHierachyTreeNode node = (NetworkHierachyTreeNode) path.getLastPathComponent();
 
-		List<NetworkHierachyNode> leafs = getLeafs(node);
-
 		NetworkHierachyNodeTransferable toTransfer = null;
 		try {
 
-			toTransfer = new NetworkHierachyNodeTransferable(leafs);
+			toTransfer = new NetworkHierachyNodeTransferable(new ArrayList<NetworkHierachyNode>(node.getOperatorable().getNetworks()));
 		} catch (ClassNotFoundException e1) {
 			e1.printStackTrace();
 		}
-		CroCoLogger.getLogger().debug("Selected elements:\t" + leafs);
+		CroCoLogger.getLogger().debug("Selected elements:\t" + node);
 		dragSource.startDrag(e, DragSource.DefaultMoveNoDrop, toTransfer, this);
 
 

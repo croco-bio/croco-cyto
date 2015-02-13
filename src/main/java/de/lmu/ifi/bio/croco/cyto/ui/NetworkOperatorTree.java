@@ -26,20 +26,20 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.Stack;
 
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPopupMenu;
 import javax.swing.JTree;
-import javax.swing.event.TreeSelectionEvent;
-import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
 
 import org.slf4j.LoggerFactory;
 
+import de.lmu.ifi.bio.crco.connector.QueryService;
 import de.lmu.ifi.bio.crco.data.ContextTreeNode;
 import de.lmu.ifi.bio.crco.data.NetworkHierachyNode;
 import de.lmu.ifi.bio.crco.data.NetworkOperationNode;
@@ -133,49 +133,109 @@ public class NetworkOperatorTree extends JTree implements DropTargetListener,Dra
 
 				@Override
 				public void actionPerformed(ActionEvent arg) {
-					Transfer transfer = new Transfer();
-					NetworkOperationNode node = selectedNodes.get(0).getOperatorable();
-				
-					OrthologMappingSelection orthologMappingDialog = new OrthologMappingSelection(node.getSpecies()); 
-					int ret = orthologMappingDialog.showDialog();
-					
-					if ( ret != JOptionPane.OK_OPTION) return; //user did not press ok
-					OrthologMappingInformation selectedOrthologMapping = orthologMappingDialog.getSelectedMapping();
-					
-					List<OrthologMappingInformation> selected = new ArrayList<OrthologMappingInformation>();
-					selected.add(orthologMappingDialog.getSelectedMapping());
-					transfer.setInput(Transfer.OrthologMappingInformation, selected);
-					transfer.setInput(Transfer.OrthologRepository,OrthologRepository.getInstance( QueryServiceWrapper.getInstance().getService()));
-					
-					
-					
-					try{
-						transfer.checkParameter();
-					}catch(OperationNotPossibleException e){
-						
-						JOptionPane.showMessageDialog(null, e.getMessage(), "Error", JOptionPane.WARNING_MESSAGE);
-						return;
-					}
-					
-					Species fromSpecies = selectedOrthologMapping.getSpecies1().equals(node.getSpecies())?selectedOrthologMapping.getSpecies1():selectedOrthologMapping.getSpecies2();;
-					Species targetSpecies = selectedOrthologMapping.getSpecies1().equals(node.getSpecies())?selectedOrthologMapping.getSpecies2():selectedOrthologMapping.getSpecies1();;
-					
-					LoggerFactory.getLogger(getClass()).debug(String.format("Selected transfer from: %s to %s",fromSpecies,targetSpecies));
-						
-					NetworkOperationNode parent = ( (NetworkOperatorTreeNode)NetworkOperatorTree.this.getModel().getRoot()).getOperatorable();
-					
-					
-					NetworkOperationNode n = new NetworkOperationNode(parent,targetSpecies.getTaxId(),transfer);
-					
-	
-					node.getParent().removeChild(node);
-					n.addChild(node);
-						
-						
-					NetworkOperatorTree.this.addNode(n);
+				    List<NetworkOperationNode> tmp = new ArrayList<NetworkOperationNode>();
+				    for(NetworkOperatorTreeNode treeNode : selectedNodes)
+				    {
+				        tmp.add(treeNode.getOperatorable());
+				    }
+				    showTransferDialog(root,tmp);
 				}
 			});
 		}
+	}
+	
+	private void showTransferDialog(NetworkOperatorTreeNode root,List<NetworkOperationNode> selectedNodes)
+	{
+	    
+	    QueryService service = QueryServiceWrapper.getInstance().getService();
+	    
+	    List<OrthologMappingInformation> orthologMappings = null;
+        try{
+            orthologMappings = service.getOrthologMappingInformation(null, null, null);
+        }catch(Exception e)
+        {
+            throw new RuntimeException(e);
+        }
+        
+        Set<Species> species = new HashSet<Species>();
+        for(NetworkOperationNode node : selectedNodes)
+        {
+            species.add(node.getSpecies());
+        }
+        
+        OrthologMappingSelection orthologMappingDialog = new OrthologMappingSelection(orthologMappings,species); 
+        int ret = orthologMappingDialog.showDialog();
+        
+        if ( ret != JOptionPane.OK_OPTION) return; //user did not press ok
+        Species target = orthologMappingDialog.getSelectedTargetSpecies();
+        
+        
+	    for(NetworkOperationNode node : selectedNodes)
+	    {
+	        //NetworkOperationNode node = treeNode.getOperatorable();
+	        
+	        
+	        
+	        
+	        LoggerFactory.getLogger(getClass()).debug(String.format("Selected transfer from: %s to %s",node.getSpecies(),target));
+            
+	        
+	        if ( target.equals(node.getSpecies()) )
+	        {
+	            if ( node.getParent() != null)
+	                node.getParent().removeChild(node);
+	                
+	            root.getOperatorable().addChild(node);
+	            continue;
+	            
+	        }
+	        
+	        List<OrthologMappingInformation> selected = new ArrayList<OrthologMappingInformation>();
+	        
+	        
+	        for(OrthologMappingInformation om : orthologMappings)
+	        {
+	            if ( 
+	               (! om.getSpecies1().equals(node.getSpecies()) || !om.getSpecies2().equals(target) )&& 
+	               ( ! om.getSpecies2().equals(node.getSpecies()) || !om.getSpecies1().equals(target))) continue;
+                selected.add(om);
+	        }
+	        LoggerFactory.getLogger(getClass()).info("Selected ortholog mappings:" + selected);
+	        	        
+	        if ( selected.size() == 0)
+	        {
+	            throw new RuntimeException("No ortholog mapping available");
+	        }
+	        Transfer transfer = new Transfer();
+	        
+	        transfer.setInput(Transfer.OrthologMappingInformation, selected);
+	        transfer.setInput(Transfer.OrthologRepository,OrthologRepository.getInstance( QueryServiceWrapper.getInstance().getService()));
+	        try{
+	            transfer.checkParameter();
+	        }catch(OperationNotPossibleException e){
+	            
+	            JOptionPane.showMessageDialog(null, e.getMessage(), "Error", JOptionPane.WARNING_MESSAGE);
+	            return;
+	        }
+	        
+	        //Species fromSpecies = selectedOrthologMapping.getSpecies1().equals(node.getSpecies())?selectedOrthologMapping.getSpecies1():selectedOrthologMapping.getSpecies2();;
+	        //Species targetSpecies = selectedOrthologMapping.getSpecies1().equals(node.getSpecies())?selectedOrthologMapping.getSpecies2():selectedOrthologMapping.getSpecies1();;
+	        
+	            
+	        NetworkOperationNode rootOperatorable = ( (NetworkOperatorTreeNode)NetworkOperatorTree.this.getModel().getRoot()).getOperatorable();
+	        
+	        NetworkOperationNode transferNode = new NetworkOperationNode(rootOperatorable,target.getTaxId(),transfer);
+	        
+	        if ( node.getParent() != null)
+	            node.getParent().removeChild(node);
+	        
+	        transferNode.addChild(node);
+	            
+	        root.getOperatorable().addChild(transferNode);
+	        
+	    }
+	    model.reload();
+        
 	}
 	/**
 	 * Expand or collapse all nodes 
@@ -266,28 +326,18 @@ public class NetworkOperatorTree extends JTree implements DropTargetListener,Dra
 	}
 	private boolean isAddable(NetworkOperationNode root, List<NetworkOperationNode> newChildren){
 		
-		//check for different tax ids
-		Integer taxId = root.getTaxId();
-		for(NetworkOperationNode newNode:newChildren ){
-			if (taxId != null && !newNode.getTaxId().equals(taxId)){
-				String msg = String.format("Cannot add node with networks from different species. Select a single network and use the network transfer operation");
-				JOptionPane.showMessageDialog(null, msg, "Error", JOptionPane.WARNING_MESSAGE);
-				LoggerFactory.getLogger(getClass()).debug(String.format("Different tax id %d %d",taxId,newNode.getTaxId()));
-				
-				return false;
-			}
-			taxId = newNode.getTaxId();
-		}
-		if ( root.getOperator() != null){
-			if ( 
-				(
-						root.getOperator().getClass().equals(SupportFilter.class)  || root.getOperator().getClass().equals(Shuffle.class) || root.getOperator().getClass().equals(Transfer.class) ||  root.getOperator().getClass().equals(GeneSetFilter.class) )  
-				&&
-				root.getChildren().size()+newChildren.size() >1){
-				LoggerFactory.getLogger(getClass()).debug(String.format("%s has already a child",root.getOperator().getClass().getSimpleName()));
-				return false;
-			}
-		}
+	    if ( root.getOperator() != null){
+            if ( 
+                (
+                        root.getOperator().getClass().equals(SupportFilter.class)  || root.getOperator().getClass().equals(Shuffle.class) || root.getOperator().getClass().equals(Transfer.class) ||  root.getOperator().getClass().equals(GeneSetFilter.class) )  
+                &&
+                root.getChildren().size()+newChildren.size() >1){
+                LoggerFactory.getLogger(getClass()).debug(String.format("%s has already a child",root.getOperator().getClass().getSimpleName()));
+                return false;
+            }
+        }
+        
+	    
 		
 		for(NetworkOperationNode newNode:newChildren ){
 			boolean ret = isAddable(root,newNode);
@@ -373,11 +423,28 @@ public class NetworkOperatorTree extends JTree implements DropTargetListener,Dra
 				toProcess.add(child);
 				if ( child.getSpecies().getTaxId() != null) species.add(child.getSpecies());
 			}
-			if ( species.size() == 1)top.setSpecies(species.iterator().next());
+			if (! Transfer.class.isInstance(top.getOperator()))
+			{
+			    if ( species.size() == 1){
+	                top.setSpecies(species.iterator().next());
+	            }    
+			}
+			
 		}
-	
 	}
-
+	private NetworkOperationNode getNetworkOperationNode(NetworkHierachyNode nh)
+	{
+	    ReadNetwork reader = new ReadNetwork();
+        reader.setInput(ReadNetwork.GlobalRepository, false);
+        reader.setInput(ReadNetwork.QueryService, QueryServiceWrapper.getInstance().getService());
+        reader.setInput(ReadNetwork.NetworkHierachyNode, nh);
+        if( context != null){
+            reader.setInput(ReadNetwork.ContextTreeNode, context);
+        }
+        NetworkOperationNode node = new NetworkOperationNode(null,nh.getTaxId(),reader);
+        return node;
+       
+	}
 	public void addNetworks(List<NetworkHierachyNode> n,NetworkOperationNode selectedRoot, boolean goContext ){
 		if ( goContext == false){
 			context = null;
@@ -392,16 +459,9 @@ public class NetworkOperatorTree extends JTree implements DropTargetListener,Dra
 			}
 		}
 		List<NetworkOperationNode> networkOperationNodes = new ArrayList<NetworkOperationNode>();
-		for(NetworkHierachyNode a : n){
-			ReadNetwork reader = new ReadNetwork();
-			reader.setInput(ReadNetwork.GlobalRepository, false);
-			reader.setInput(ReadNetwork.QueryService, QueryServiceWrapper.getInstance().getService());
-			reader.setInput(ReadNetwork.NetworkHierachyNode, a);
-			if( context != null){
-				reader.setInput(ReadNetwork.ContextTreeNode, context);
-			}
-			NetworkOperationNode node = new NetworkOperationNode(null,a.getTaxId(),reader);
-			networkOperationNodes.add(node);
+		for(NetworkHierachyNode nh : n){
+		    
+		    networkOperationNodes.add(getNetworkOperationNode(nh));
 		}
 		
 		LoggerFactory.getLogger(getClass()).debug(String.format("Move element: %s to %s",n.toString(),selectedRoot.toString()));
@@ -434,12 +494,32 @@ public class NetworkOperatorTree extends JTree implements DropTargetListener,Dra
 				
 				List<NetworkHierachyNode> n = (List<NetworkHierachyNode>) tr.getTransferData( NetworkHierachyNodeTransferable.INFO_FLAVOR );
 				NetworkOperatorTreeNode selectedRoot = getSelectedDropRoot(e);
-				addNetworks(n,selectedRoot);
-			} catch (UnsupportedFlavorException e1) {
-				e1.printStackTrace();
-			} catch (IOException e1) {
-				e1.printStackTrace();
+				
+		        Set<Integer> taxIds = new HashSet<Integer>();
+		        Integer taxId = null;
+		        for(NetworkHierachyNode newNode:n ){
+		            taxIds.add(newNode.getTaxId());
+		            taxId = newNode.getTaxId();
+		        }
+		        
+		        if ( taxIds.size() != 1 )
+		        {
+		            List<NetworkOperationNode> nops = new ArrayList<NetworkOperationNode>();
+		            
+		            for(NetworkHierachyNode newNode:n )
+		            {
+		                nops.add(getNetworkOperationNode(newNode));
+		            }
+		            this.showTransferDialog(selectedRoot,nops);
+		            updateRoot(selectedRoot.getOperatorable());
+		        }else{
+		            addNetworks(n,selectedRoot);
+		        }
+				
+			} catch (Exception e1) {
+				throw new RuntimeException(e1);
 			}
+			
 			paintImmediately(getVisibleRect());
 			e.getDropTargetContext().dropComplete(true);
 		} else if (tr.isDataFlavorSupported(OperatorableTransferable.INFO_FLAVOR)){ //moving nodes in operator tree

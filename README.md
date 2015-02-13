@@ -9,4 +9,4 @@ mvn install -Dmaven.test.skip=true
 The install command creates a bundles jar with all dependencies.
 
 In Cytoscape:
-install mvn:de.lmu.ifi.bio.croco/croco-cytp/0.1
+install mvn:de.lmu.ifi.bio.croco/croco-cyto/0.1

@@ -1,14 +1,14 @@
-Help.1.Text=<HTML>Press <FONT color="blue">connet</FONT> in order to connect to the specified croco-webservice.</HTML>
+Help.1.Text=<HTML>Press <FONT color="blue">connet</FONT> in order to connect to the specified croco-webservice. The first connection attempt may take some minutes as the croco-ontology has to be downloaded from the croco-webservices.</HTML>
 Help.1.Image=connect.png
-Help.2.Text=<HTML>Select network(s) or an entire node in the <FONT color="blue">croco-repo</font> and drag & drop it from the repository (top tree) into the <FONT color="blue">Network Selection List  (bottom)</font></HTML>
+Help.2.Text=<HTML>Select network(s) or an entire node in the <FONT color="blue">croco-ontology</font> and drag & drop them into the <FONT color="blue">Network Selection List  (bottom)</font>.</HTML>
 Help.2.Image=select.png
-Help.3.Text=<HTML>Select a network, or an entire node  in the <FONT color="blue">Selection List</font> and right click in order to open the <FONT color="blue">Ortholog Transfer Dialog</font></HTML>
+Help.3.Text=<HTML>Select a network, or an entire node  in the <FONT color="blue">Selection List</font> and right click in order to open the <FONT color="blue">Ortholog Transfer Dialog</font>.</HTML>
 Help.3.Image=orthologTransfer.png
-Help.4.Text=<HTML>The <FONT color="blue">Ortholog Transfer Dialog</font> allows to ortholog transfer a network</HTML>
+Help.4.Text=<HTML>The <FONT color="blue">Ortholog Transfer Dialog</font> allows to ortholog transfer a network.</HTML>
 Help.4.Image=transfer.png
-Help.5.Text=<HTML>Network operation can be added to the <FONT color="blue">Network Selection List</font> by clicking on the desired the operation in the <FONT color="blue">Network Operation Panel</font> </HTML>
+Help.5.Text=<HTML>Network operation can be added to the <FONT color="blue">Network Selection List</font> by clicking on the desired operation in the <FONT color="blue">Network Operation Panel.</font> </HTML>
 Help.5.Image=union.png
-Help.6.Text=<HTML>Network operation can be stacked in the  <FONT color="blue">Network Selection List</font> via dragging & dropping of networks, or network operations  </HTML>
+Help.6.Text=<HTML>Network operation can be stacked in the  <FONT color="blue">Network Selection List</font> via dragging & dropping of networks, or network operations.  </HTML>
 Help.6.Image=union.png
 Help.7.Text=<HTML>Press <FONT color="blue">Produce Network</font> in order to import the network into Cytoscape. The operations are processed as defined in the <FONT color="blue">Network Selection List</font>.
 For each final network a summary is displayed showing the number of edges and nodes after each operation.  </HTML>

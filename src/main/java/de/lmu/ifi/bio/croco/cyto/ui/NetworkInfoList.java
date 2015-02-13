@@ -2,6 +2,7 @@ package de.lmu.ifi.bio.croco.cyto.ui;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map.Entry;
 
 import javax.swing.JTable;
 import javax.swing.table.AbstractTableModel;
@@ -26,21 +27,20 @@ public class NetworkInfoList extends JTable {
 			if ( node != null){
 				
 				try{
-					QueryService service = QueryServiceWrapper.getInstance().getService();
 					
 					
 					
 					data.add(new Pair<String,String>("Network name", node.getName()));
-					
 					data.add(new Pair<String,String>("Species", Species.getSpecies(node.getTaxId()).getName()));
+					data.add(new Pair<String,String>("Network ID",node.getGroupId() + ""));
+                    
+					data.add(new Pair<String,String>("Number of interactions",""+ QueryServiceWrapper.getInstance().getService().getNumberOfEdges(node.getGroupId())));
+                    
 					
-					
-					List<Pair<Option, String>> options = service.getNetworkInfo(node.getGroupId());
-					for(Pair<Option,String> option : options){
-						data.add(new Pair<String,String>(option.getFirst().description, option.getSecond()));
+					for(Entry<Option, String> option : node.getOptions().entrySet()){
+						data.add(new Pair<String,String>(option.getKey().description, option.getValue()));
 					}
 					
-					data.add(new Pair<String,String>("Network ID",node.getGroupId() + ""));
 					
 				}catch(Exception e){
 					throw new RuntimeException(e);

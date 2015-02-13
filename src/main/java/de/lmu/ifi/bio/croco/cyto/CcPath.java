@@ -11,13 +11,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -25,10 +20,10 @@ import java.util.Set;
 import java.util.Stack;
 
 import javax.imageio.ImageIO;
+import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JDialog;
-import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JMenuItem;
@@ -66,7 +61,6 @@ import org.cytoscape.work.swing.DialogTaskManager;
 import org.osgi.framework.BundleContext;
 import org.slf4j.LoggerFactory;
 
-
 import de.lmu.ifi.bio.crco.data.Entity;
 import de.lmu.ifi.bio.crco.data.NetworkHierachyNode;
 import de.lmu.ifi.bio.crco.data.NetworkOperationNode;
@@ -90,12 +84,12 @@ import de.lmu.ifi.bio.crco.util.CroCoLogger;
 import de.lmu.ifi.bio.crco.util.CroCoProperties;
 import de.lmu.ifi.bio.croco.cyto.converter.CytoscapeTransformer;
 import de.lmu.ifi.bio.croco.cyto.ui.Help;
-import de.lmu.ifi.bio.croco.cyto.ui.NetworkHierachyTreeNode;
 import de.lmu.ifi.bio.croco.cyto.ui.NetworkInfoList;
 import de.lmu.ifi.bio.croco.cyto.ui.NetworkOperatorTree;
 import de.lmu.ifi.bio.croco.cyto.ui.NetworkOperatorTreeNode;
 import de.lmu.ifi.bio.croco.cyto.ui.NetworkSummaryDialog;
 import de.lmu.ifi.bio.croco.cyto.ui.NetworkTree;
+import de.lmu.ifi.bio.croco.cyto.ui.NetworkTree.NetworkHierachyTreeNode;
 import de.lmu.ifi.bio.croco.cyto.util.CytoscapeProperties;
 import de.lmu.ifi.bio.croco.cyto.util.QueryServiceWrapper;
 
@@ -104,6 +98,7 @@ public class CcPath extends AbstractWebServiceGUIClient  implements NetworkImpor
 	private static int MAX_BEFORE_WARN = 20;
 	public static void main(String[] args) throws Exception{
 		
+	
 		CcPath ccPath = new CcPath(null);
 		JFrame f = new JFrame();
 		f.setTitle("CroCo Test");
@@ -197,6 +192,9 @@ public class CcPath extends AbstractWebServiceGUIClient  implements NetworkImpor
 			
 		});
 		
+		JLabel info =new JLabel("<html><font color='#AA000000'>The first connection attempt to the croco-repo may take a few minutes.</font></html>");
+		connectionPane.add(info,"span,center,wrap");
+		connectionPane.setBorder(BorderFactory.createEtchedBorder());
 		view.add(connectionPane,"span,wrap");
 		view.add(content);
 		if ( startUpImage != null){
@@ -215,8 +213,8 @@ public class CcPath extends AbstractWebServiceGUIClient  implements NetworkImpor
 		 final NetworkTree networkTree = new NetworkTree();
 
 		 JScrollPane scrp = new JScrollPane(networkTree);
-		 view.add(new JLabel("croco-repo"));
-		 view.add(new JLabel("Network info"));
+		 view.add(new JLabel("<html><p style='font-size:1.2em'>croco-repo</p></html>"));
+		 view.add(new JLabel("<html><p style='font-size:1.2em'>Network details</p></html>"));
 		 JLabel example = new JLabel("<HTML><FONT color=\"#000099\"><U>Load example</U></FONT></HTML>");
 		 example.setOpaque(false);
 		 example.setBackground(Color.WHITE);
@@ -404,7 +402,7 @@ public class CcPath extends AbstractWebServiceGUIClient  implements NetworkImpor
 			  }else if ( possibleOperation == GeneSetFilter.class){
 				  operation.setToolTipText("Adds the Gene Set Filter operation");
 			  }
-			  operationsView.add(operation,"grow, wrap");
+			  operationsView.add(operation,"grow,center, wrap");
 			
 			  operation.addActionListener(new ActionListener(){
 
@@ -675,7 +673,6 @@ public class CcPath extends AbstractWebServiceGUIClient  implements NetworkImpor
 					
 					  ReadNetwork r = (ReadNetwork) node.getOperator();
 					  NetworkHierachyNode n =  r.getParameter(ReadNetwork.NetworkHierachyNode);
-					 
 					  showNetworkInfo(networkInfo, image, n);
 				  }
 					
@@ -690,25 +687,25 @@ public class CcPath extends AbstractWebServiceGUIClient  implements NetworkImpor
 			  public void valueChanged(TreeSelectionEvent a) {
 				  NetworkHierachyTreeNode node = (NetworkHierachyTreeNode) a.getPath().getLastPathComponent();
 				
-				  
-				  showNetworkInfo(networkInfo, image,   (NetworkHierachyNode)node.getOperatorable());
+				  if ( node.getOperatorable().getNetworks().size() == 1)
+				      showNetworkInfo(networkInfo, image,  node.getOperatorable().getNetworks().iterator().next());
 			  }
 
 		  });
 		  
 		// return view;
 	 }
-	 private void showNetworkInfo(NetworkInfoList networkInfo, JLabel image, NetworkHierachyNode node  ){
-		 
-		 networkInfo.update(node);
+	 private void showNetworkInfo(NetworkInfoList networkInfo, JLabel image, NetworkHierachyNode nh  ){
+         
+		 networkInfo.update(nh);
 		 Image img = null;
 		try {
-			img = QueryServiceWrapper.getInstance().getService().getRenderedNetwork(node.getGroupId());
+			img = QueryServiceWrapper.getInstance().getService().getRenderedNetwork(nh.getGroupId());
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		if ( img != null){
-		  img = img.getScaledInstance(370, 370, Image.SCALE_SMOOTH);
+		  img = img.getScaledInstance(360, 360, Image.SCALE_SMOOTH);
 			
 		 image.setIcon(new ImageIcon(img));
 		}

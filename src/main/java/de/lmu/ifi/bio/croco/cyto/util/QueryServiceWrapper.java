@@ -9,7 +9,6 @@ import org.slf4j.LoggerFactory;
 import de.lmu.ifi.bio.crco.connector.BufferedService;
 import de.lmu.ifi.bio.crco.connector.QueryService;
 import de.lmu.ifi.bio.crco.connector.RemoteWebService;
-import de.lmu.ifi.bio.crco.util.CroCoLogger;
 
 public class QueryServiceWrapper {
 	
