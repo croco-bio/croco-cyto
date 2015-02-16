@@ -1,4 +1,5 @@
-Help.1.Text=<HTML>Press <FONT color="blue">connet</FONT> in order to connect to the specified croco-webservice. The first connection attempt may take some minutes as the croco-ontology has to be downloaded from the croco-webservices.</HTML>
+Help.1.Text=<HTML>Press <FONT color="blue">connet</FONT> in order to connect to the specified croco-webservice. 
+The first connection attempt may take some minutes as the croco-ontology has to be downloaded from the croco-webservices.</HTML>
 Help.1.Image=connect.png
 Help.2.Text=<HTML>Select network(s) or an entire node in the <FONT color="blue">croco-ontology</font> and drag & drop them into the <FONT color="blue">Network Selection List  (bottom)</font>.</HTML>
 Help.2.Image=select.png

@@ -61,9 +61,13 @@ import org.cytoscape.work.swing.DialogTaskManager;
 import org.osgi.framework.BundleContext;
 import org.slf4j.LoggerFactory;
 
+import de.lmu.ifi.bio.crco.data.CroCoNode;
+import de.lmu.ifi.bio.crco.data.CroCoNode.GeneralFilter;
 import de.lmu.ifi.bio.crco.data.Entity;
 import de.lmu.ifi.bio.crco.data.NetworkHierachyNode;
 import de.lmu.ifi.bio.crco.data.NetworkOperationNode;
+import de.lmu.ifi.bio.crco.data.NetworkType;
+import de.lmu.ifi.bio.crco.data.Option;
 import de.lmu.ifi.bio.crco.data.Species;
 import de.lmu.ifi.bio.crco.network.Network;
 import de.lmu.ifi.bio.crco.network.NetworkSummary;
@@ -278,22 +282,31 @@ public class CcPath extends AbstractWebServiceGUIClient  implements NetworkImpor
 		            	
 		            	LoggerFactory.getLogger(CcPath.class).error("Read MEL");
                         
-		            	NetworkHierachyTreeNode mel = networkTree.getNetwork("M. musculus/Context-Specific Networks/Open Chromatin (TFBS)/DNase I Hypersensitive sites (DNase)/High Confidence/All-Motifs/MEL");
+		            	GeneralFilter f1 = new GeneralFilter(Option.TaxId,10090+"");
+		            	GeneralFilter f2 = new GeneralFilter(Option.NetworkType,NetworkType.OpenChrom.name());
+		            	GeneralFilter f3 = new GeneralFilter(Option.ConfidenceThreshold,"1.0E-6");
+		            	GeneralFilter f4 = new GeneralFilter(Option.MotifSet,"Combined set");
+		            	GeneralFilter f5 = new GeneralFilter(Option.OpenChromType,"DNase");
+		            	GeneralFilter f6 = new GeneralFilter(Option.cellLine,"MEL");
+                        
+		            	CroCoNode mel = networkTree.getRoot().getNode("MEL", f1,f2,f3,f4,f5,f6);
 		            	
-		    			
 						NetworkOperationNode melInterst = new NetworkOperationNode(parent,Species.Mouse.getTaxId(),new Intersect());
 						
-						operations.addNetworks(networkTree.getLeafs(mel), melInterst,false);
+						operations.addNetworks(mel.getNetworks(), melInterst);
 						transfer.addChild(melInterst);
 						
 						LoggerFactory.getLogger(CcPath.class).error("Read K562");
                         
-						NetworkHierachyTreeNode k562 = networkTree.getNetwork("H. sapiens/Context-Specific Networks/Open Chromatin (TFBS)/DNase I Hypersensitive sites (DNase)/High Confidence/All-Motifs/K562");
+						f1 = new GeneralFilter(Option.TaxId,9606+"");
+						f6 = new GeneralFilter(Option.cellLine,"K562");
+						CroCoNode k562 = networkTree.getRoot().getNode("MEL", f1,f2,f3,f4,f5,f6);
+                        
 						
 						NetworkOperationNode k562Interest= new NetworkOperationNode(parent,Species.Human.getTaxId(),new Intersect());
 						
-						operations.addNetworks(networkTree.getLeafs(k562), k562Interest,false);
-						
+						operations.addNetworks(k562.getNetworks(), k562Interest);
+                        
 						NetworkOperationNode intersect = new NetworkOperationNode(parent,Species.Human.getTaxId(),new Intersect());
 			            intersect.addChild(transfer);
 			            intersect.addChild(k562Interest);

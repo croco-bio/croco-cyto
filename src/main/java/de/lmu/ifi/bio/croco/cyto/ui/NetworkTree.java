@@ -46,6 +46,12 @@ public class NetworkTree extends JTree implements TreeSelectionListener,DragGest
 
 	private static final long serialVersionUID = 1L;
 	CroCoNode origRoot;
+	CroCoNode root;
+	
+	public CroCoNode getRoot()
+	{
+	    return root;
+	}
 	private static HashMap<CroCoNode,TreeNode> treeNodeMapping = new HashMap<CroCoNode,TreeNode> ();
     
 	public class NetworkHierachyTreeNode implements TreeNode {
@@ -144,6 +150,7 @@ public class NetworkTree extends JTree implements TreeSelectionListener,DragGest
 			this.origRoot = root;
 			rootNode= new CroCoNode(root);
 			rootNode.setNetworks(root.getNetworks());
+			this.root = rootNode;
 		}catch(Exception e){
 			throw new RuntimeException(e);
 		}
@@ -151,7 +158,7 @@ public class NetworkTree extends JTree implements TreeSelectionListener,DragGest
 		NetworkHierachyTreeNode root = new NetworkHierachyTreeNode(rootNode);
 
 		DefaultTreeModel model = new DefaultTreeModel(root);
-
+		
 		this.addTreeSelectionListener(this);
 		dragSource = new DragSource();
 		dragSource.createDefaultDragGestureRecognizer(this,1, this);
@@ -164,6 +171,7 @@ public class NetworkTree extends JTree implements TreeSelectionListener,DragGest
 
 		getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
 	}
+	/*
 	public NetworkHierachyTreeNode getNetwork(String path){
 		NetworkHierachyTreeNode rootNode = (NetworkHierachyTreeNode) this.getModel().getRoot();
 		String[] tokens = path.split("/");
@@ -191,7 +199,7 @@ public class NetworkTree extends JTree implements TreeSelectionListener,DragGest
 		
 		return rootNode;
 	}
-	
+	*/
 	public List<NetworkHierachyNode> getLeafs(NetworkHierachyTreeNode node){
 		List<NetworkHierachyNode> leafs = new ArrayList<NetworkHierachyNode>();
 		Stack<NetworkHierachyTreeNode> nodes = new Stack<NetworkHierachyTreeNode>();
