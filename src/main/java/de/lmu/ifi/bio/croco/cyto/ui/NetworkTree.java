@@ -36,7 +36,6 @@ import de.lmu.ifi.bio.crco.connector.QueryService;
 import de.lmu.ifi.bio.crco.data.CroCoNode;
 import de.lmu.ifi.bio.crco.data.NetworkHierachyNode;
 import de.lmu.ifi.bio.crco.util.CroCoLogger;
-import de.lmu.ifi.bio.crco.util.NetworkOntology;
 import de.lmu.ifi.bio.crco.util.NetworkOntology.LeafNode;
 import de.lmu.ifi.bio.croco.cyto.ui.transferable.NetworkHierachyNodeTransferable;
 import de.lmu.ifi.bio.croco.cyto.util.QueryServiceWrapper;

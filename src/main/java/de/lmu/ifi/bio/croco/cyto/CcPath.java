@@ -100,6 +100,8 @@ import de.lmu.ifi.bio.croco.cyto.util.QueryServiceWrapper;
 
 public class CcPath extends AbstractWebServiceGUIClient  implements NetworkImportWebServiceClient, SearchWebServiceClient{
 	private static int MAX_BEFORE_WARN = 20;
+	private static String description ="CroCo enables the comparative network analysis on both standard conventional global and context-specific regulatory networks. CroCo is a tool suite to conduct differential analysis on derived condition specific networks from ENCODE ChIP-seq/ChIP-chip and DNase-seq together with static network for eukaryotic model organisms.";;
+        
 	public static void main(String[] args) throws Exception{
 		
 	
@@ -114,8 +116,7 @@ public class CcPath extends AbstractWebServiceGUIClient  implements NetworkImpor
 	}
 	private BundleContext context;
 	public CcPath(BundleContext context) throws Exception {
-		super("http://services.bio.ifi.lmu.de/croco", "CroCo-Cyto", "CroCo enables the comparative network analysis on both standard conventional global and context-specific regulatory networks. CroCo is a tool suite to conduct differential analysis on derived condition specific networks from ENCODE ChIP-seq/ChIP-chip and DNase-seq together with static network for eukaryotic model organisms. ");
-		
+		super("http://services.bio.ifi.lmu.de/croco", "CroCo-Cyto",description );
 		LoggerFactory.getLogger(getClass()).info("Init web service client");
 		gui = new JPanel();
 		
