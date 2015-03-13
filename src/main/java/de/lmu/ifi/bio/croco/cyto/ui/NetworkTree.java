@@ -147,6 +147,7 @@ public class NetworkTree extends JTree implements TreeSelectionListener,DragGest
 		try{
 			CroCoNode root = QueryServiceWrapper.getInstance().getService().getNetworkOntology();
 			this.origRoot = root;
+			System.out.println(root);
 			rootNode= new CroCoNode(root);
 			rootNode.setNetworks(root.getNetworks());
 			this.root = rootNode;

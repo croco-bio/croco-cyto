@@ -50,7 +50,7 @@ public class OrthologMappingSelection extends JDialog{
 	private int buttonCode= JOptionPane.CANCEL_OPTION;
 	private Species targetSpecies;
 	
-	class SpeciesSelectionComboBoxModel extends DefaultComboBoxModel<Species>{
+	class SpeciesSelectionComboBoxModel extends DefaultComboBoxModel{
 		private static final long serialVersionUID = 1L;
 		private HashSet<Species> filterData;
 		private List<Species> data;
