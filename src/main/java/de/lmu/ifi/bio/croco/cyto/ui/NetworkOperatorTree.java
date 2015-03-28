@@ -55,7 +55,6 @@ import de.lmu.ifi.bio.crco.operation.ortholog.OrthologMappingInformation;
 import de.lmu.ifi.bio.crco.operation.ortholog.OrthologRepository;
 import de.lmu.ifi.bio.croco.cyto.ui.transferable.NetworkHierachyNodeTransferable;
 import de.lmu.ifi.bio.croco.cyto.ui.transferable.OperatorableTransferable;
-import de.lmu.ifi.bio.croco.cyto.util.QueryServiceWrapper;
 
 public class NetworkOperatorTree extends JTree implements DropTargetListener,DragGestureListener,DragSourceListener {
 
@@ -64,6 +63,7 @@ public class NetworkOperatorTree extends JTree implements DropTargetListener,Dra
 	private NetworkOperatorTreeNode root;
 	private DefaultTreeModel model;
 	private DragSource dragSource = null;
+	private QueryService service;
 	
 	/**
 	 * Functionality provided via the context menu
@@ -168,8 +168,6 @@ public class NetworkOperatorTree extends JTree implements DropTargetListener,Dra
 	private void showTransferDialog(NetworkOperatorTreeNode root,List<NetworkOperationNode> selectedNodes)
 	{
 	    
-	    QueryService service = QueryServiceWrapper.getInstance().getService();
-	    
 	    List<OrthologMappingInformation> orthologMappings = null;
         try{
             orthologMappings = service.getOrthologMappingInformation(null, null, null);
@@ -227,7 +225,7 @@ public class NetworkOperatorTree extends JTree implements DropTargetListener,Dra
 	        Transfer transfer = new Transfer();
 	        
 	        transfer.setInput(Transfer.OrthologMappingInformation, selected);
-	        transfer.setInput(Transfer.OrthologRepository,OrthologRepository.getInstance( QueryServiceWrapper.getInstance().getService()));
+	        transfer.setInput(Transfer.OrthologRepository,OrthologRepository.getInstance( service));
 	      
 	        try{
 	            transfer.checkParameter();
@@ -294,15 +292,15 @@ public class NetworkOperatorTree extends JTree implements DropTargetListener,Dra
 		 return selected;
 	}
 
-	public NetworkOperatorTree(){
+	public NetworkOperatorTree(QueryService service){
 		DropTarget target = new DropTarget(this, this); 
 		root = new NetworkOperatorTreeNode(new NetworkOperationNode());
 		model = new DefaultTreeModel(root);
-
+		this.service = service;
 		this.setRootVisible(false);
 		dragSource = new DragSource();
 		//DragGestureRecognizer recognizer = 
-		dragSource.createDefaultDragGestureRecognizer(this,2, this);
+		dragSource.createDefaultDragGestureRecognizer(this,DnDConstants.ACTION_MOVE, this);
 	   // setCellRenderer(new NetworkTreeRenderer());
 		this.setModel(model);
 
@@ -333,7 +331,8 @@ public class NetworkOperatorTree extends JTree implements DropTargetListener,Dra
 
 	@Override
 	public void dragEnter(DropTargetDragEvent e) {
-		e.acceptDrag(1);
+	//	e.acceptDrag(1);
+	//    System.out.println("HERE");
 	}
 
 	@Override
@@ -456,7 +455,7 @@ public class NetworkOperatorTree extends JTree implements DropTargetListener,Dra
 	{
 	    ReadNetwork reader = new ReadNetwork();
         reader.setInput(ReadNetwork.GlobalRepository, false);
-        reader.setInput(ReadNetwork.QueryService, QueryServiceWrapper.getInstance().getService());
+        reader.setInput(ReadNetwork.QueryService, service);
         reader.setInput(ReadNetwork.NetworkHierachyNode, nh);
        /*
         if( context != null){
@@ -473,11 +472,12 @@ public class NetworkOperatorTree extends JTree implements DropTargetListener,Dra
 	private ContextTreeNode goSelection()
 	{
 	    try {
-	        GoBrowser browser = new GoBrowser(null,previous_context);
+	        GoBrowser browser = new GoBrowser(null,previous_context,service);
 	        previous_context = browser.showDialog();
 	        LoggerFactory.getLogger(getClass()).debug("Selected context:" + previous_context);
 	    } catch (Exception e1) {
 	        previous_context = null;
+	        e1.printStackTrace();
 	        LoggerFactory.getLogger(getClass()).error(e1.getMessage() + ".Set context to none");
 	    }
 	    

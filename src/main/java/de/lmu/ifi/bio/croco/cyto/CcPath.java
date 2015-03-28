@@ -11,6 +11,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -49,6 +50,7 @@ import org.cytoscape.io.webservice.SearchWebServiceClient;
 import org.cytoscape.io.webservice.swing.AbstractWebServiceGUIClient;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNetworkManager;
+import org.cytoscape.property.CyProperty;
 import org.cytoscape.service.util.internal.utils.ServiceUtil;
 import org.cytoscape.view.model.CyNetworkView;
 import org.cytoscape.view.model.CyNetworkViewFactory;
@@ -61,6 +63,9 @@ import org.cytoscape.work.swing.DialogTaskManager;
 import org.osgi.framework.BundleContext;
 import org.slf4j.LoggerFactory;
 
+import de.lmu.ifi.bio.crco.connector.BufferedService;
+import de.lmu.ifi.bio.crco.connector.QueryService;
+import de.lmu.ifi.bio.crco.connector.RemoteWebService;
 import de.lmu.ifi.bio.crco.data.CroCoNode;
 import de.lmu.ifi.bio.crco.data.CroCoNode.GeneralFilter;
 import de.lmu.ifi.bio.crco.data.Entity;
@@ -95,16 +100,18 @@ import de.lmu.ifi.bio.croco.cyto.ui.NetworkSummaryDialog;
 import de.lmu.ifi.bio.croco.cyto.ui.NetworkTree;
 import de.lmu.ifi.bio.croco.cyto.ui.NetworkTree.NetworkHierachyTreeNode;
 import de.lmu.ifi.bio.croco.cyto.util.CytoscapeProperties;
-import de.lmu.ifi.bio.croco.cyto.util.QueryServiceWrapper;
 
 
 public class CcPath extends AbstractWebServiceGUIClient  implements NetworkImportWebServiceClient, SearchWebServiceClient{
 	private static int MAX_BEFORE_WARN = 20;
 	private static String description ="CroCo enables the comparative network analysis on both standard conventional global and context-specific regulatory networks. CroCo is a tool suite to conduct differential analysis on derived condition specific networks from ENCODE ChIP-seq/ChIP-chip and DNase-seq together with static network for eukaryotic model organisms.";;
-        
+    private QueryService service;    
+	
 	public static void main(String[] args) throws Exception{
 		
-	
+	    CroCoProperties.init(CroCoLogger.class.getClassLoader().getResourceAsStream("connet-croco.config"));
+        
+        
 		CcPath ccPath = new CcPath(null);
 		JFrame f = new JFrame();
 		f.setTitle("CroCo Test");
@@ -127,7 +134,6 @@ public class CcPath extends AbstractWebServiceGUIClient  implements NetworkImpor
 	private void init() throws Exception{
 
 		JPanel mainPanel = (JPanel) gui;
-
 		mainPanel.setPreferredSize(new Dimension (900,640));
 		mainPanel.setLayout (new BorderLayout());
 
@@ -137,39 +143,54 @@ public class CcPath extends AbstractWebServiceGUIClient  implements NetworkImpor
 		JPanel connectionPane = new JPanel(new MigLayout());
 		connectionPane.add(new JLabel("CroCo web service:"));
 		final JTextField connectionField = new JTextField();
+        final JTextField bufferDir = new JTextField();
 
 		Image startUpImage = null;
 		try {
-			CroCoProperties.init(CroCoLogger.class.getClassLoader().getResourceAsStream("connet-croco.config"));
+		    
 			connectionField.setText(CroCoProperties.getInstance().getValue(CytoscapeProperties.urlStr));
 			startUpImage = ImageIO.read(CroCoLogger.class.getClassLoader().getResourceAsStream("startup-img.png"));
-
+			 File cytoBaseDir = new File(System.getProperty("user.home"),CyProperty.DEFAULT_PROPS_CONFIG_DIR + "/croco");
+			 bufferDir.setText(cytoBaseDir.toString());
 		} catch (IOException e2) {
 			e2.printStackTrace();
 		}
-
-
+		
+		
 		connectionPane.add(connectionField,"gapleft 30, width 500, grow");
+		
 		JButton connectBtn = new JButton("Connect");
+		
 		connectBtn.addActionListener(new ActionListener(){
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				String url = connectionField.getText();
-			
+				File buffer = new File(bufferDir.getText());
+				if (! buffer.exists())
+				{
+				    boolean ret = buffer.mkdirs();
+				    if ( !ret )
+				    {
+				        JOptionPane.showMessageDialog(null,"Check dir", "Cannot create buffer dir:" +buffer, JOptionPane.ERROR_MESSAGE);
+				        return;
+				    }    
+				}
+				
 				try{
-					Long version = QueryServiceWrapper.getVersion(url);
-					LoggerFactory.getLogger(getClass()).info("Service version:" + version);
-					QueryServiceWrapper.getInstance(url).getService();
+				    
+			        RemoteWebService remoteService = new RemoteWebService(url);
+                    Long version = remoteService.getVersion();
+                    LoggerFactory.getLogger(getClass()).info("Service version:" + version);
+
+			        service = new BufferedService(remoteService, buffer );
+			        
 					
 				}catch(Exception ex){
-				    JOptionPane.showMessageDialog(null, "Cannot connect to:" + url, "Connection failure", JOptionPane.ERROR_MESSAGE);
+				    ex.printStackTrace();
+				    JOptionPane.showMessageDialog(null, "Cannot connect to:" + url + "\n" + ex.getMessage(), "Connection failure" , JOptionPane.ERROR_MESSAGE);
 					LoggerFactory.getLogger(getClass()).error(ex.getMessage());
 					return;
-				}
-				if (! url.equals(CytoscapeProperties.getProperties().get(CytoscapeProperties.urlStr))){
-					CytoscapeProperties.getProperties().put(CytoscapeProperties.urlStr, url);
-					CytoscapeProperties.storeProperties();
 				}
 				
 				content.removeAll();
@@ -195,8 +216,12 @@ public class CcPath extends AbstractWebServiceGUIClient  implements NetworkImpor
 				
 			}
 			
-		});
 		
+		});
+		connectionPane.add(new JLabel("Buffer dir:"));
+        
+		connectionPane.add(bufferDir,"gapleft 30, width 500, grow,wrap");
+        
 		JLabel info =new JLabel("<html><font color='#AA000000'>The first connection attempt to the croco-repo may take a few minutes.</font></html>");
 		connectionPane.add(info,"span,center,wrap");
 		connectionPane.setBorder(BorderFactory.createEtchedBorder());
@@ -208,14 +233,15 @@ public class CcPath extends AbstractWebServiceGUIClient  implements NetworkImpor
 			content.add(imgStartUplnl,"gapleft 175");
 		}
 		    
-	     mainPanel.add(view, BorderLayout.CENTER);      
+	     mainPanel.add(view, BorderLayout.CENTER);     
+	        
 	 }
 
 	 public void createNetworkView(JPanel view){
 	
 		 
 		 
-		 final NetworkTree networkTree = new NetworkTree();
+		 final NetworkTree networkTree = new NetworkTree(service);
 
 		 JScrollPane scrp = new JScrollPane(networkTree);
 		 view.add(new JLabel("<html><p style='font-size:1.2em'>croco-repo</p></html>"));
@@ -232,7 +258,7 @@ public class CcPath extends AbstractWebServiceGUIClient  implements NetworkImpor
 		 view.add(scrp, "width 500, height 500");
 		 final JLabel image = new JLabel();
 		 
-		 final NetworkInfoList networkInfo = new NetworkInfoList();
+		 final NetworkInfoList networkInfo = new NetworkInfoList(service);
 		 JPanel infoView = new JPanel(new MigLayout()); 
 		 infoView.add(networkInfo,"width 370, wrap");
 		 infoView.add(image,"wrap");
@@ -241,7 +267,7 @@ public class CcPath extends AbstractWebServiceGUIClient  implements NetworkImpor
 		  view.add(scrp2,"width 400, height 500, span 2,wrap");
 		 
 		  
-		  final NetworkOperatorTree operations = new NetworkOperatorTree();
+		  final NetworkOperatorTree operations = new NetworkOperatorTree(service);
 		  JScrollPane scrp3 = new JScrollPane(operations);
 		  JPanel operationsView = new JPanel();
 	
@@ -276,8 +302,8 @@ public class CcPath extends AbstractWebServiceGUIClient  implements NetworkImpor
 					try{
 					    LoggerFactory.getLogger(CcPath.class).error("Set transfer node");
 						Transfer transferOperation = new Transfer();
-		            	transferOperation.setInput(Transfer.OrthologMappingInformation, QueryServiceWrapper.getInstance().getService().getOrthologMappingInformation(null, Species.Human, Species.Mouse));
-		    			transferOperation.setInput(Transfer.OrthologRepository,OrthologRepository.getInstance( QueryServiceWrapper.getInstance().getService()));
+		            	transferOperation.setInput(Transfer.OrthologMappingInformation,service.getOrthologMappingInformation(null, Species.Human, Species.Mouse));
+		    			transferOperation.setInput(Transfer.OrthologRepository,OrthologRepository.getInstance(service));
 		            	
 		            	NetworkOperationNode transfer = new NetworkOperationNode(parent,Species.Human.getTaxId(),transferOperation);
 		            	
@@ -339,8 +365,7 @@ public class CcPath extends AbstractWebServiceGUIClient  implements NetworkImpor
 									@Override
 									public void actionPerformed(ActionEvent e) {
 										NetworkHierachyTreeNode selected = networkTree.getSelectedNode();
-										
-										operations.addNetworks(networkTree.getLeafs(selected),(NetworkOperatorTreeNode)operations.getModel().getRoot() );
+										operations.addNetworks(new ArrayList<NetworkHierachyNode>(selected.getOperatorable().getNetworks()),(NetworkOperatorTreeNode)operations.getModel().getRoot() );
 
 									}
 								});
@@ -585,7 +610,7 @@ public class CcPath extends AbstractWebServiceGUIClient  implements NetworkImpor
 							}
 						});
 						try{
-						    network = OperationUtil.process(QueryServiceWrapper.getInstance().getService(),root,pi);
+						    network = OperationUtil.process(service,root,pi);
 						}catch(Exception e){
 							LoggerFactory.getLogger(CcPath.class).error("Cannot process",e);
 						}
@@ -714,7 +739,7 @@ public class CcPath extends AbstractWebServiceGUIClient  implements NetworkImpor
 		 networkInfo.update(nh);
 		 Image img = null;
 		try {
-			img = QueryServiceWrapper.getInstance().getService().getRenderedNetwork(nh.getGroupId());
+			img = service.getRenderedNetwork(nh.getGroupId());
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

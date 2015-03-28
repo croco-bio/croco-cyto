@@ -4,6 +4,7 @@ import java.awt.Desktop;
 import java.awt.event.ActionEvent;
 import java.net.URI;
 import java.util.List;
+import java.util.Properties;
 
 import javax.swing.JOptionPane;
 
@@ -13,6 +14,7 @@ import org.cytoscape.model.CyEdge;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNode;
 import org.cytoscape.model.CyTableUtil;
+import org.cytoscape.property.CyProperty;
 import org.cytoscape.service.util.internal.utils.ServiceUtil;
 import org.osgi.framework.BundleContext;
 
@@ -23,10 +25,12 @@ public class EvidenceLookup  extends AbstractCyAction {
 
 	private static final long serialVersionUID = 1L;
 	private BundleContext context;
-	public EvidenceLookup(BundleContext context, CyApplicationManager cyApplicationManager, final String menuTitle) {
+	private String urlEvidence ;
+	public EvidenceLookup(BundleContext context, CyApplicationManager cyApplicationManager, final String menuTitle, String urlEvidence) {
 		
 		super(menuTitle, cyApplicationManager, null, null);
 		this.context = context;
+		this.urlEvidence = urlEvidence;
 		setPreferredMenu("Apps.CroCo-Cyto");
 	
 	}
@@ -49,11 +53,13 @@ public class EvidenceLookup  extends AbstractCyAction {
 			CyNode sourceNode = edges.get(0).getSource();
 			CyNode targetNode = edges.get(0).getTarget();
 			
+			
+
 			URI uri;
 			try {
 				uri = new URI(
 						String.format(
-								"%s?factor=%s&target=%s",CytoscapeProperties.getProperties().get(CytoscapeProperties.urlEvidenceLookUp).toString(),
+								"%s?factor=%s&target=%s",urlEvidence,
 								currentNetwork.getRow(sourceNode).get("Name", String.class),
 								currentNetwork.getRow(targetNode).get("Name", String.class) 
 								)

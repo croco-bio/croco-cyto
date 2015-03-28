@@ -1,6 +1,6 @@
 package de.lmu.ifi.bio.croco.cyto.ui;
 
-import java.awt.Rectangle;
+import java.awt.dnd.DnDConstants;
 import java.awt.dnd.DragGestureEvent;
 import java.awt.dnd.DragGestureListener;
 import java.awt.dnd.DragSource;
@@ -9,10 +9,6 @@ import java.awt.dnd.DragSourceDragEvent;
 import java.awt.dnd.DragSourceDropEvent;
 import java.awt.dnd.DragSourceEvent;
 import java.awt.dnd.DragSourceListener;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Enumeration;
@@ -21,10 +17,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Stack;
 
-import javax.swing.JMenuItem;
-import javax.swing.JPopupMenu;
 import javax.swing.JTree;
-import javax.swing.SwingUtilities;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.DefaultTreeModel;
@@ -36,9 +29,8 @@ import de.lmu.ifi.bio.crco.connector.QueryService;
 import de.lmu.ifi.bio.crco.data.CroCoNode;
 import de.lmu.ifi.bio.crco.data.NetworkHierachyNode;
 import de.lmu.ifi.bio.crco.util.CroCoLogger;
-import de.lmu.ifi.bio.crco.util.NetworkOntology.LeafNode;
+import de.lmu.ifi.bio.crco.util.ontology.NetworkOntology.LeafNode;
 import de.lmu.ifi.bio.croco.cyto.ui.transferable.NetworkHierachyNodeTransferable;
-import de.lmu.ifi.bio.croco.cyto.util.QueryServiceWrapper;
 
 
 public class NetworkTree extends JTree implements TreeSelectionListener,DragGestureListener,DragSourceListener{
@@ -139,15 +131,14 @@ public class NetworkTree extends JTree implements TreeSelectionListener,DragGest
 	}
 	private DragSource dragSource = null;
 
-	public NetworkTree()  {
+	public NetworkTree(QueryService service)  {
 
 		CroCoLogger.getLogger().info("Load root");
 
 		CroCoNode rootNode = null;
 		try{
-			CroCoNode root = QueryServiceWrapper.getInstance().getService().getNetworkOntology();
+			CroCoNode root = service.getNetworkOntology();
 			this.origRoot = root;
-			System.out.println(root);
 			rootNode= new CroCoNode(root);
 			rootNode.setNetworks(root.getNetworks());
 			this.root = rootNode;
@@ -161,7 +152,7 @@ public class NetworkTree extends JTree implements TreeSelectionListener,DragGest
 		
 		this.addTreeSelectionListener(this);
 		dragSource = new DragSource();
-		dragSource.createDefaultDragGestureRecognizer(this,1, this);
+		dragSource.createDefaultDragGestureRecognizer(this,DnDConstants.ACTION_MOVE, this);
 
 
 		this.setRootVisible(false);
@@ -246,14 +237,14 @@ public class NetworkTree extends JTree implements TreeSelectionListener,DragGest
 			e1.printStackTrace();
 		}
 		CroCoLogger.getLogger().debug("Selected elements:\t" + node);
-		dragSource.startDrag(e, DragSource.DefaultMoveNoDrop, toTransfer, this);
+		dragSource.startDrag(e, DragSource.DefaultMoveDrop, toTransfer, this);
 
 
 	}
 	@Override
 	public void dragEnter(DragSourceDragEvent e) {
 		DragSourceContext context = e.getDragSourceContext();  
-		context.setCursor(DragSource.DefaultCopyDrop);  
+		context.setCursor(DragSource.DefaultMoveDrop);  
 
 	}
 	@Override

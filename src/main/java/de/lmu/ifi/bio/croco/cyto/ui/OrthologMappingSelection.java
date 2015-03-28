@@ -24,11 +24,10 @@ import javax.swing.JPanel;
 import javax.swing.ListCellRenderer;
 
 import net.miginfocom.swing.MigLayout;
-import de.lmu.ifi.bio.crco.connector.QueryService;
+import de.lmu.ifi.bio.crco.connector.LocalService;
 import de.lmu.ifi.bio.crco.data.Species;
 import de.lmu.ifi.bio.crco.operation.ortholog.OrthologMappingInformation;
 import de.lmu.ifi.bio.crco.util.Pair;
-import de.lmu.ifi.bio.croco.cyto.util.QueryServiceWrapper;
 
 /**
  * Ortholog mapping selection dialogs for a given species.
@@ -152,7 +151,7 @@ public class OrthologMappingSelection extends JDialog{
 		return buttonCode;
 	}
 	public static void main(String[] args) throws Exception{
-	    QueryService service = QueryServiceWrapper.getInstance().getService();
+	    LocalService service= new LocalService();
 	    List<OrthologMappingInformation> mappings = service.getOrthologMappingInformation(null,null,null);
 	    
 		OrthologMappingSelection s = new OrthologMappingSelection(mappings,Species.Mouse,Species.Fly);

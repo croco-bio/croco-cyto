@@ -1,6 +1,5 @@
 package de.lmu.ifi.bio.croco.cyto.ui;
 
-import java.awt.Dimension;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
@@ -13,21 +12,20 @@ import javax.swing.event.TreeExpansionEvent;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 import javax.swing.event.TreeWillExpandListener;
-import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.ExpandVetoException;
 import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
 import javax.swing.tree.TreeSelectionModel;
 
+import de.lmu.ifi.bio.crco.connector.LocalService;
 import de.lmu.ifi.bio.crco.connector.QueryService;
 import de.lmu.ifi.bio.crco.data.ContextTreeNode;
 import de.lmu.ifi.bio.crco.data.HierachyNode;
 import de.lmu.ifi.bio.crco.util.CroCoLogger;
-import de.lmu.ifi.bio.croco.cyto.util.QueryServiceWrapper;
 
 public class GOBrowserTree extends JTree implements TreeSelectionListener, TreeWillExpandListener{
-
+    private QueryService service;
 	class GoNode implements TreeNode{
 		private ContextTreeNode node;
 		private Vector<TreeNode> children ;
@@ -81,7 +79,7 @@ public class GOBrowserTree extends JTree implements TreeSelectionListener, TreeW
 	}
 	
 	public static void main(String[] args) throws Exception{
-		GOBrowserTree browser = new GOBrowserTree(null);
+		GOBrowserTree browser = new GOBrowserTree(null,new LocalService());
 		JFrame frame = new JFrame();
 		 JScrollPane scrp = new JScrollPane(browser);
 		frame.add(scrp);
@@ -101,13 +99,12 @@ public class GOBrowserTree extends JTree implements TreeSelectionListener, TreeW
 		DefaultTreeModel model = new DefaultTreeModel(root);
 		this.setModel(model);
 	}
-	public GOBrowserTree(ContextTreeNode context) throws Exception{
+	public GOBrowserTree(ContextTreeNode context,QueryService service) throws Exception{
 		
 
-		
+		this.service = service;
 		init(context);
 		this.expandRow(0);
-
 		this.addTreeSelectionListener(this);
 		this.setRootVisible(true);
 		
@@ -124,7 +121,6 @@ public class GOBrowserTree extends JTree implements TreeSelectionListener, TreeW
 	
 		if ( context.getChildren() != null) return;
 		CroCoLogger.getLogger().debug("Load children for:\t" + node);
-		QueryService service = QueryServiceWrapper.getInstance().getService();
 		List<HierachyNode> children =new  ArrayList<HierachyNode> ();
 		
 		for(ContextTreeNode child : service.getChildren(context)){
@@ -167,7 +163,6 @@ public class GOBrowserTree extends JTree implements TreeSelectionListener, TreeW
 		
 	}
 	public void init(ContextTreeNode context) throws Exception {
-		QueryService service = QueryServiceWrapper.getInstance().getService();
 		 
 		GoNode root = null;
 		if ( context == null){

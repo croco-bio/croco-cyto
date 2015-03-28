@@ -12,10 +12,9 @@ import de.lmu.ifi.bio.crco.data.NetworkHierachyNode;
 import de.lmu.ifi.bio.crco.data.Option;
 import de.lmu.ifi.bio.crco.data.Species;
 import de.lmu.ifi.bio.crco.util.Pair;
-import de.lmu.ifi.bio.croco.cyto.util.QueryServiceWrapper;
 
 public class NetworkInfoList extends JTable {
-
+    QueryService service;
 	class TableModel extends AbstractTableModel{
 	
 		private static final long serialVersionUID = 1L;
@@ -34,7 +33,7 @@ public class NetworkInfoList extends JTable {
 					data.add(new Pair<String,String>("Species", Species.getSpecies(node.getTaxId()).getName()));
 					data.add(new Pair<String,String>("Network ID",node.getGroupId() + ""));
                     
-					data.add(new Pair<String,String>("Number of interactions",""+ QueryServiceWrapper.getInstance().getService().getNumberOfEdges(node.getGroupId())));
+					data.add(new Pair<String,String>("Number of interactions",""+service.getNumberOfEdges(node.getGroupId())));
                     
 					
 					for(Entry<Option, String> option : node.getOptions().entrySet()){
@@ -84,8 +83,9 @@ public class NetworkInfoList extends JTable {
 	
 	private static final long serialVersionUID = 1L;
 
-	public NetworkInfoList() {
+	public NetworkInfoList(QueryService service) {
 		super();
+		this.service = service;
 	}
 
 	public void update(NetworkHierachyNode node){

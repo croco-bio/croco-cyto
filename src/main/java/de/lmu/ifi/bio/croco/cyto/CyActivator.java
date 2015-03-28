@@ -7,6 +7,7 @@ import java.util.Properties;
 
 import org.apache.log4j.PropertyConfigurator;
 import org.cytoscape.application.CyApplicationManager;
+import org.cytoscape.property.CyProperty;
 import org.cytoscape.service.util.AbstractCyActivator;
 import org.cytoscape.view.layout.CyLayoutAlgorithm;
 import org.cytoscape.view.layout.CyLayoutAlgorithmManager;
@@ -14,25 +15,31 @@ import org.cytoscape.work.undo.UndoSupport;
 import org.osgi.framework.BundleContext;
 import org.slf4j.LoggerFactory;
 
+import de.lmu.ifi.bio.crco.util.CroCoLogger;
 import de.lmu.ifi.bio.crco.util.CroCoProperties;
 import de.lmu.ifi.bio.croco.cyto.layout.CopyLayout;
 import de.lmu.ifi.bio.croco.cyto.layout.GroupLayout;
+import de.lmu.ifi.bio.croco.cyto.util.CytoscapeProperties;
 
 public class CyActivator extends AbstractCyActivator {
-
+    
 	@Override
 	public void start(BundleContext context)  {
 		try{
 			
+		    CroCoProperties.init(CroCoLogger.class.getClassLoader().getResourceAsStream("connet-croco.config"));
+            
+		    
 			//init config
-			Properties props = CroCoProperties.getInstance().getProperties();
-			PropertyConfigurator.configure(props);
+		//	Properties props = CroCoProperties.getInstance().getProperties();
+		//	PropertyConfigurator.configure(props);
 			
 			CyApplicationManager cyApplicationManager = getService(context, CyApplicationManager.class);
 		
-			//register services
+			//create services
 			DavidGoEnrichment action = new DavidGoEnrichment(context,cyApplicationManager, "David GO enrichment");
-			EvidenceLookup lookup = new EvidenceLookup(context,cyApplicationManager, "Evidence look-up");
+			EvidenceLookup lookup = new EvidenceLookup(context,cyApplicationManager, "Evidence look-up",CroCoProperties.getInstance().getValue(CytoscapeProperties.urlEvidenceLookUp));
+            
 			
 			CyLayoutAlgorithmManager manager = getService(context,CyLayoutAlgorithmManager.class);
 			CyLayoutAlgorithm defaultLayout = manager.getDefaultLayout();
@@ -51,16 +58,23 @@ public class CyActivator extends AbstractCyActivator {
 		
 			CcPath ccPath = new CcPath(context);
 			
+	
 			
 			Properties properties = new Properties();
-	
 			registerAllServices(context, ccPath, properties);
 			registerAllServices(context, action, properties);
+			
 			registerAllServices(context, lookup, properties);
 			registerAllServices(context, layout, properties);
 			registerAllServices(context, copyLayout, properties);
 			
 			
+			
+                /*
+                if (! properties.containsKey(CytoscapeProperties.baseDirStr)){
+                    properties.put(CytoscapeProperties.baseDirStr, configBaseDir+ "/croco");
+                }
+            */
 		
 		}catch(Exception e){
 			LoggerFactory.getLogger(CyActivator.class).equals(e.getMessage());

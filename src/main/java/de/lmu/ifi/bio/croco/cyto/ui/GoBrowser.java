@@ -9,7 +9,6 @@ import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.event.DocumentEvent;
@@ -17,19 +16,18 @@ import javax.swing.event.DocumentListener;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 
+import net.miginfocom.swing.MigLayout;
+import de.lmu.ifi.bio.crco.connector.LocalService;
 import de.lmu.ifi.bio.crco.connector.QueryService;
 import de.lmu.ifi.bio.crco.data.ContextTreeNode;
-import de.lmu.ifi.bio.crco.data.ContextType;
-import de.lmu.ifi.bio.crco.data.NetworkHierachyNode;
 import de.lmu.ifi.bio.crco.util.CroCoLogger;
 import de.lmu.ifi.bio.croco.cyto.ui.GOBrowserTree.GoNode;
-import de.lmu.ifi.bio.croco.cyto.util.QueryServiceWrapper;
-
-import net.miginfocom.swing.MigLayout;
 
 public class GoBrowser extends JDialog {
+    QueryService service;
+    
 	public static void main(String[] main ) throws Exception{
-		GoBrowser b = new GoBrowser(null,null);
+		GoBrowser b = new GoBrowser(null,null,new LocalService());
 		b.showDialog();
 	}
 	
@@ -42,7 +40,7 @@ public class GoBrowser extends JDialog {
 	private ContextTreeNode selected;
 	public void init() throws Exception{
 		this.setLayout(new MigLayout());
-		 final GOBrowserTree browser = new GOBrowserTree(context);
+		 final GOBrowserTree browser = new GOBrowserTree(context,service);
 		 
 		  JScrollPane scrp = new JScrollPane(browser);
 		  scrp.setPreferredSize(new Dimension(890,570));
@@ -66,7 +64,6 @@ public class GoBrowser extends JDialog {
 
 			  public void updata() {
 				  if ( txt.getText().length() > 0){
-					  QueryService service = QueryServiceWrapper.getInstance().getService();
 					  try {
 						  List<ContextTreeNode> nodes = service.getContextTreeNodes(txt.getText());
 						  browser.setData(nodes);
@@ -127,10 +124,11 @@ public class GoBrowser extends JDialog {
 		 this.setVisible(true);
 	}
 	private ContextTreeNode context;
-	public GoBrowser(JFrame frame, ContextTreeNode context) throws Exception{
+	public GoBrowser(JFrame frame, ContextTreeNode context, QueryService service) throws Exception{
 		super(frame,"Gene Ontology Browser",true);
 		CroCoLogger.getLogger().debug("Given default context:" + context);
 		this.context = context;
+		this.service = service;
 	}
 	
 	
