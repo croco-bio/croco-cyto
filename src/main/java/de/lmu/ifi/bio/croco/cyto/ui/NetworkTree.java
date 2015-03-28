@@ -243,8 +243,6 @@ public class NetworkTree extends JTree implements TreeSelectionListener,DragGest
 	}
 	@Override
 	public void dragEnter(DragSourceDragEvent e) {
-		DragSourceContext context = e.getDragSourceContext();  
-		context.setCursor(DragSource.DefaultMoveDrop);  
 
 	}
 	@Override

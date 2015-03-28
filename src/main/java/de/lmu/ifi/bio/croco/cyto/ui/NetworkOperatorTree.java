@@ -300,7 +300,7 @@ public class NetworkOperatorTree extends JTree implements DropTargetListener,Dra
 		this.setRootVisible(false);
 		dragSource = new DragSource();
 		//DragGestureRecognizer recognizer = 
-		dragSource.createDefaultDragGestureRecognizer(this,DnDConstants.ACTION_MOVE, this);
+		dragSource.createDefaultDragGestureRecognizer(this,DnDConstants.ACTION_COPY, this);
 	   // setCellRenderer(new NetworkTreeRenderer());
 		this.setModel(model);
 
@@ -332,7 +332,7 @@ public class NetworkOperatorTree extends JTree implements DropTargetListener,Dra
 	@Override
 	public void dragEnter(DropTargetDragEvent e) {
 	//	e.acceptDrag(1);
-	//    System.out.println("HERE");
+	  //  System.out.println("HERE");
 	}
 
 	@Override
@@ -342,7 +342,7 @@ public class NetworkOperatorTree extends JTree implements DropTargetListener,Dra
 
 	@Override
 	public void dragOver(DropTargetDragEvent dsde) {
-		dsde.acceptDrag(DnDConstants.ACTION_COPY_OR_MOVE);
+	//	dsde.acceptDrag(DnDConstants.ACTION_COPY_OR_MOVE);
 	}
 	private boolean isAddable(NetworkOperationNode root, List<NetworkOperationNode> newChildren){
 		
@@ -615,14 +615,14 @@ public class NetworkOperatorTree extends JTree implements DropTargetListener,Dra
 			e1.printStackTrace();
 		}
 
-		dragSource.startDrag(e, DragSource.DefaultMoveNoDrop, toTransfer, this);
+		dragSource.startDrag(e, DragSource.DefaultMoveDrop, toTransfer, this);
 
 
 	}
 	@Override
 	public void dragEnter(DragSourceDragEvent e) {
-		DragSourceContext context = e.getDragSourceContext();  
-		context.setCursor(DragSource.DefaultMoveDrop);    
+	//	DragSourceContext context = e.getDragSourceContext();  
+	//	context.setCursor(DragSource.DefaultMoveDrop);    
 		/*
 		//Point p = e.getLocation();  
 		DragSourceContext context = e.getDragSourceContext();  
