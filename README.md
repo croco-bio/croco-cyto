@@ -16,6 +16,8 @@ croco-cyto
 
 The CroCo Cytoscape plug-in allows access to the croco network repository containing some 7.000 context-specific as well as global regulatory networks organized in an multi-dimensional ontology.
 
+![Screenshot](http://services.bio.ifi.lmu.de/croco-web/data/croco-cyto.png)
+
 croco-cyto installation
 =========
 see http://services.bio.ifi.lmu.de/croco-web for latest (stabil) build.
