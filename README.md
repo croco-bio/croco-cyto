@@ -21,15 +21,15 @@ croco-cyto installation
 see http://services.bio.ifi.lmu.de/croco-web for latest (stabil) build.
 
 
-*Start Cytoscape (tested with Cytoscape 3.2.1)
-*Select: File/Import/Network/Public database
-*Select: Data Source: croco-cyto
-*Insert the web-service URL: http://services.bio.ifi.lmu.de/croco-web/services/
-*Click on: connect
-*Browse the ontology and select networks of interest from the croco-repo and drag them into the selection list
-*Click on Union/Intersect/... to add a network operation.
-*In order to apply network operation on networks, drag&drop the desired networks onto the network operation node
-*Click on "Generate final Network"
+* Start Cytoscape (tested with Cytoscape 3.2.1)
+* Select: File/Import/Network/Public database
+* Select: Data Source: croco-cyto
+* Insert the web-service URL: http://services.bio.ifi.lmu.de/croco-web/services/
+* Click on: connect
+* Browse the ontology and select networks of interest from the croco-repo and drag them into the selection list
+* Click on Union/Intersect/... to add a network operation.
+* In order to apply network operation on networks, drag&drop the desired networks onto the network operation node
+* Click on "Generate final Network"
 
 
 croco-cyto build (from source)
