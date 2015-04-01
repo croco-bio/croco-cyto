@@ -101,18 +101,23 @@ import de.lmu.ifi.bio.croco.cyto.ui.NetworkTree;
 import de.lmu.ifi.bio.croco.cyto.ui.NetworkTree.NetworkHierachyTreeNode;
 import de.lmu.ifi.bio.croco.cyto.util.CytoscapeProperties;
 
-
-public class CcPath extends AbstractWebServiceGUIClient  implements NetworkImportWebServiceClient, SearchWebServiceClient{
+/**
+ * Main view of the croco-cyto plug-in.
+ * @author pesch
+ *
+ */
+public class CroCoCyto extends AbstractWebServiceGUIClient  implements NetworkImportWebServiceClient, SearchWebServiceClient{
 	private static int MAX_BEFORE_WARN = 20;
 	private static String description ="CroCo enables the comparative network analysis on both standard conventional global and context-specific regulatory networks. CroCo is a tool suite to conduct differential analysis on derived condition specific networks from ENCODE ChIP-seq/ChIP-chip and DNase-seq together with static network for eukaryotic model organisms.";;
     private QueryService service;    
 	
+    
 	public static void main(String[] args) throws Exception{
 		
 	    CroCoProperties.init(CroCoLogger.class.getClassLoader().getResourceAsStream("connet-croco.config"));
         
         
-		CcPath ccPath = new CcPath(null);
+	    CroCoCyto ccPath = new CroCoCyto(null);
 		JFrame f = new JFrame();
 		f.setTitle("CroCo Test");
 		f.add(ccPath.gui);
@@ -122,7 +127,9 @@ public class CcPath extends AbstractWebServiceGUIClient  implements NetworkImpor
 		f.setVisible(true);
 	}
 	private BundleContext context;
-	public CcPath(BundleContext context) throws Exception {
+	
+	
+	public CroCoCyto(BundleContext context) throws Exception {
 		super("http://services.bio.ifi.lmu.de/croco", "CroCo-Cyto",description );
 		LoggerFactory.getLogger(getClass()).info("Init web service client");
 		gui = new JPanel();
@@ -131,6 +138,10 @@ public class CcPath extends AbstractWebServiceGUIClient  implements NetworkImpor
 		this.init();
 		
 	}
+	/**
+	 * Creats the layout and listeners
+	 * @throws Exception
+	 */
 	private void init() throws Exception{
 
 		JPanel mainPanel = (JPanel) gui;
@@ -161,12 +172,15 @@ public class CcPath extends AbstractWebServiceGUIClient  implements NetworkImpor
 		
 		JButton connectBtn = new JButton("Connect");
 		
+		//connect to the croco-repo
 		connectBtn.addActionListener(new ActionListener(){
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				String url = connectionField.getText();
 				File buffer = new File(bufferDir.getText());
+				
+				//create dir for buffer
 				if (! buffer.exists())
 				{
 				    boolean ret = buffer.mkdirs();
@@ -185,6 +199,7 @@ public class CcPath extends AbstractWebServiceGUIClient  implements NetworkImpor
 
 			        service = new BufferedService(remoteService, buffer );
 			        
+			        //TODO: check for version!
 					
 				}catch(Exception ex){
 				    ex.printStackTrace();
@@ -195,9 +210,7 @@ public class CcPath extends AbstractWebServiceGUIClient  implements NetworkImpor
 				
 				content.removeAll();
 				createNetworkView(content);
-				//view.repaint();
 				content.revalidate();
-				//gui.repaint();
 			}
 			
 		});
@@ -294,20 +307,20 @@ public class CcPath extends AbstractWebServiceGUIClient  implements NetworkImpor
 		  view.add(okButton,"align right,grow,wrap");
 		  
 		
-		  
+		  //load the example with operations and networks
 	      example.addMouseListener(new MouseAdapter() {
 	            @Override
 	            public void mouseClicked(MouseEvent e) {
 	            	NetworkOperationNode parent = ((NetworkOperatorTreeNode)operations.getModel().getRoot()).getOperatorable();
 					try{
-					    LoggerFactory.getLogger(CcPath.class).error("Set transfer node");
+					   
 						Transfer transferOperation = new Transfer();
 		            	transferOperation.setInput(Transfer.OrthologMappingInformation,service.getOrthologMappingInformation(null, Species.Human, Species.Mouse));
 		    			transferOperation.setInput(Transfer.OrthologRepository,OrthologRepository.getInstance(service));
 		            	
 		            	NetworkOperationNode transfer = new NetworkOperationNode(parent,Species.Human.getTaxId(),transferOperation);
 		            	
-		            	LoggerFactory.getLogger(CcPath.class).error("Read MEL");
+		            	LoggerFactory.getLogger(CroCoCyto.class).error("Read MEL");
                         
 		            	GeneralFilter f1 = new GeneralFilter(Option.TaxId,10090+"");
 		            	GeneralFilter f2 = new GeneralFilter(Option.NetworkType,NetworkType.OpenChrom.name());
@@ -323,7 +336,7 @@ public class CcPath extends AbstractWebServiceGUIClient  implements NetworkImpor
 						operations.addNetworks(mel.getNetworks(), melInterst);
 						transfer.addChild(melInterst);
 						
-						LoggerFactory.getLogger(CcPath.class).error("Read K562");
+						LoggerFactory.getLogger(CroCoCyto.class).error("Read K562");
                         
 						f1 = new GeneralFilter(Option.TaxId,9606+"");
 						f6 = new GeneralFilter(Option.cellLine,"K562");
@@ -341,7 +354,7 @@ public class CcPath extends AbstractWebServiceGUIClient  implements NetworkImpor
 			            
 			            operations.expandAll(true);
 					}catch(Exception ex){
-						LoggerFactory.getLogger(CcPath.class).error(ex.toString());
+						LoggerFactory.getLogger(CroCoCyto.class).error(ex.toString());
 						JOptionPane.showMessageDialog(null, String.format("Could not load example (%s)",ex.toString()),"Error",  JOptionPane.WARNING_MESSAGE);
 					}
 	            }
@@ -612,20 +625,20 @@ public class CcPath extends AbstractWebServiceGUIClient  implements NetworkImpor
 						try{
 						    network = OperationUtil.process(service,root,pi);
 						}catch(Exception e){
-							LoggerFactory.getLogger(CcPath.class).error("Cannot process",e);
+							LoggerFactory.getLogger(CroCoCyto.class).error("Cannot process",e);
 						}
 						if ( cancelled){
-							LoggerFactory.getLogger(CcPath.class).debug("Operation stopped");
+							LoggerFactory.getLogger(CroCoCyto.class).debug("Operation stopped");
 							return; 
 						}
 						if ( network == null){
-							LoggerFactory.getLogger(CcPath.class).error("No network generated");
+							LoggerFactory.getLogger(CroCoCyto.class).error("No network generated");
 							return;
 						}
 						summaries.add(network.getNetworkSummary());
 						CytoscapeTransformer transformer = new CytoscapeTransformer(context);
 
-						LoggerFactory.getLogger(CcPath.class).debug("Processing done.");
+						LoggerFactory.getLogger(CroCoCyto.class).debug("Processing done.");
 						
 					
 						CyNetwork cytoNetwork = transformer.convert(network);

@@ -56,6 +56,11 @@ import de.lmu.ifi.bio.crco.operation.ortholog.OrthologRepository;
 import de.lmu.ifi.bio.croco.cyto.ui.transferable.NetworkHierachyNodeTransferable;
 import de.lmu.ifi.bio.croco.cyto.ui.transferable.OperatorableTransferable;
 
+/**
+ * The NetworkOperatorTree allows to combine networks and network operations.
+ * @author pesch
+ *
+ */
 public class NetworkOperatorTree extends JTree implements DropTargetListener,DragGestureListener,DragSourceListener {
 
 	

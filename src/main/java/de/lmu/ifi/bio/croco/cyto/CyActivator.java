@@ -26,21 +26,18 @@ public class CyActivator extends AbstractCyActivator {
 	@Override
 	public void start(BundleContext context)  {
 		try{
-			
+		    //init the CroCoProperties
 		    CroCoProperties.init(CroCoLogger.class.getClassLoader().getResourceAsStream("connet-croco.config"));
             
 		    
-			//init config
-		//	Properties props = CroCoProperties.getInstance().getProperties();
-		//	PropertyConfigurator.configure(props);
-			
+	
 			CyApplicationManager cyApplicationManager = getService(context, CyApplicationManager.class);
 		
 			//create services
 			DavidGoEnrichment action = new DavidGoEnrichment(context,cyApplicationManager, "David GO enrichment");
 			EvidenceLookup lookup = new EvidenceLookup(context,cyApplicationManager, "Evidence look-up",CroCoProperties.getInstance().getValue(CytoscapeProperties.urlEvidenceLookUp));
             
-			
+			//create (layout) services
 			CyLayoutAlgorithmManager manager = getService(context,CyLayoutAlgorithmManager.class);
 			CyLayoutAlgorithm defaultLayout = manager.getDefaultLayout();
 			for(CyLayoutAlgorithm layout : manager.getAllLayouts()){
@@ -53,28 +50,21 @@ public class CyActivator extends AbstractCyActivator {
 			
 			
 			Properties dict = new Properties();
-			dict.setProperty(PREFERRED_MENU, "CroCo.TFBS");
+			dict.setProperty(PREFERRED_MENU, "CroCo");
 			dict.setProperty(MENU_GRAVITY, "-1"); 
 		
-			CcPath ccPath = new CcPath(context);
+			CroCoCyto crocoCyto = new CroCoCyto(context);
 			
 	
 			
 			Properties properties = new Properties();
-			registerAllServices(context, ccPath, properties);
+			registerAllServices(context, crocoCyto, properties);
 			registerAllServices(context, action, properties);
 			
 			registerAllServices(context, lookup, properties);
 			registerAllServices(context, layout, properties);
 			registerAllServices(context, copyLayout, properties);
 			
-			
-			
-                /*
-                if (! properties.containsKey(CytoscapeProperties.baseDirStr)){
-                    properties.put(CytoscapeProperties.baseDirStr, configBaseDir+ "/croco");
-                }
-            */
 		
 		}catch(Exception e){
 			LoggerFactory.getLogger(CyActivator.class).equals(e.getMessage());

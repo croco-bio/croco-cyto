@@ -14,6 +14,11 @@ import javax.swing.tree.DefaultTreeModel;
 import de.lmu.ifi.bio.crco.network.NetworkSummary;
 import de.lmu.ifi.bio.crco.util.CroCoLogger;
 
+/**
+ * Dialog to show the network operation summary.
+ * @author pesch
+ *
+ */
 public class NetworkSummaryDialog  extends JDialog{
 
 	private static final long serialVersionUID = 1L;

@@ -21,6 +21,10 @@ import org.osgi.framework.BundleContext;
 import de.lmu.ifi.bio.crco.util.CroCoLogger;
 import de.lmu.ifi.bio.croco.cyto.util.CytoscapeProperties;
 
+/**
+ * @author pesch
+ *
+ */
 public class EvidenceLookup  extends AbstractCyAction {
 
 	private static final long serialVersionUID = 1L;

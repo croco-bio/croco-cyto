@@ -7,7 +7,11 @@ import javax.swing.tree.TreeNode;
 
 import de.lmu.ifi.bio.crco.data.NetworkOperationNode;
 
-//Only a wrapper
+/**
+ * A wrapper for NetworkOperationNode nodes (see croco-api).
+ * @author pesch
+ *
+ */
 public class NetworkOperatorTreeNode implements TreeNode {
 
 	private String name;

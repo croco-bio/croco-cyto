@@ -23,6 +23,11 @@ import de.lmu.ifi.bio.crco.data.ContextTreeNode;
 import de.lmu.ifi.bio.crco.util.CroCoLogger;
 import de.lmu.ifi.bio.croco.cyto.ui.GOBrowserTree.GoNode;
 
+/**
+ * Implements a gene ontology browser.
+ * @author pesch
+ *
+ */
 public class GoBrowser extends JDialog {
     QueryService service;
     

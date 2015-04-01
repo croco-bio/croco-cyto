@@ -34,6 +34,11 @@ import org.cytoscape.work.TaskMonitor;
 import org.cytoscape.work.undo.UndoSupport;
 import org.osgi.framework.BundleContext;
 
+/**
+ * Copies the (x,y) location from one network view to another.
+ * @author pesch
+ *
+ */
 public class CopyLayout extends CroCoLayout{
 
 	private List<CyNetworkView> selectedNetworkViews = new ArrayList<CyNetworkView>();

@@ -13,7 +13,11 @@ import javax.swing.ListCellRenderer;
 import org.cytoscape.view.layout.AbstractLayoutAlgorithm;
 import org.cytoscape.work.undo.UndoSupport;
 
-
+/**
+ * Provides (meta) layout functions
+ * @author pesch
+ *
+ */
 public abstract class CroCoLayout extends AbstractLayoutAlgorithm{
 
 	public CroCoLayout(String id, String name, UndoSupport undoSupport) {
