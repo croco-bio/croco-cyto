@@ -21,7 +21,7 @@ The CroCo Cytoscape plug-in allows access to the croco network repository contai
 
 croco-cyto installation
 =========
-see http://services.bio.ifi.lmu.de/croco-web for latest (stabil) build.
+see http://services.bio.ifi.lmu.de/croco-web for latest (stable) build.
 
 
 * Start Cytoscape (tested with Cytoscape 3.2.1)
@@ -31,7 +31,7 @@ see http://services.bio.ifi.lmu.de/croco-web for latest (stabil) build.
 * Click on: connect
 * Browse the ontology and select networks of interest from the croco-repo and drag them into the selection list
 * Click on Union/Intersect/... to add a network operation.
-* In order to apply network operation on networks, drag&drop the desired networks onto the network operation node
+* In order to apply network operation on networks: drag&drop the desired networks onto the network operation node (see screenshot for an example)
 * Click on "Generate final Network"
 
 
@@ -45,3 +45,7 @@ The install command creates a bundles jar with all dependencies.
 
 In Cytoscape:
 install mvn:de.lmu.ifi.bio.croco/croco-cyto/0.1
+
+Contact & Bug-reports & Suggestions
+=========
+We are constantly improving the croco components. So if you find any bugs, or have general suggestions/comments, please send a mail to: robert.pesch@bio.ifi.lmu.de
