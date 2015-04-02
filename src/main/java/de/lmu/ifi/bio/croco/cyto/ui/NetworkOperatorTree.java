@@ -40,19 +40,19 @@ import javax.swing.tree.TreePath;
 
 import org.slf4j.LoggerFactory;
 
-import de.lmu.ifi.bio.crco.connector.QueryService;
-import de.lmu.ifi.bio.crco.data.ContextTreeNode;
-import de.lmu.ifi.bio.crco.data.NetworkHierachyNode;
-import de.lmu.ifi.bio.crco.data.NetworkOperationNode;
-import de.lmu.ifi.bio.crco.data.Species;
-import de.lmu.ifi.bio.crco.data.exceptions.OperationNotPossibleException;
-import de.lmu.ifi.bio.crco.operation.GeneSetFilter;
-import de.lmu.ifi.bio.crco.operation.ReadNetwork;
-import de.lmu.ifi.bio.crco.operation.Shuffle;
-import de.lmu.ifi.bio.crco.operation.SupportFilter;
-import de.lmu.ifi.bio.crco.operation.Transfer;
-import de.lmu.ifi.bio.crco.operation.ortholog.OrthologMappingInformation;
-import de.lmu.ifi.bio.crco.operation.ortholog.OrthologRepository;
+import de.lmu.ifi.bio.croco.connector.QueryService;
+import de.lmu.ifi.bio.croco.data.ContextTreeNode;
+import de.lmu.ifi.bio.croco.data.NetworkHierachyNode;
+import de.lmu.ifi.bio.croco.data.NetworkOperationNode;
+import de.lmu.ifi.bio.croco.data.Species;
+import de.lmu.ifi.bio.croco.data.exceptions.OperationNotPossibleException;
+import de.lmu.ifi.bio.croco.operation.GeneSetFilter;
+import de.lmu.ifi.bio.croco.operation.ReadNetwork;
+import de.lmu.ifi.bio.croco.operation.Shuffle;
+import de.lmu.ifi.bio.croco.operation.SupportFilter;
+import de.lmu.ifi.bio.croco.operation.Transfer;
+import de.lmu.ifi.bio.croco.operation.ortholog.OrthologMappingInformation;
+import de.lmu.ifi.bio.croco.operation.ortholog.OrthologRepository;
 import de.lmu.ifi.bio.croco.cyto.ui.transferable.NetworkHierachyNodeTransferable;
 import de.lmu.ifi.bio.croco.cyto.ui.transferable.OperatorableTransferable;
 

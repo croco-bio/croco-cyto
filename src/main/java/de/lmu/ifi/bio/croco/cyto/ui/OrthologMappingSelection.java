@@ -24,10 +24,10 @@ import javax.swing.JPanel;
 import javax.swing.ListCellRenderer;
 
 import net.miginfocom.swing.MigLayout;
-import de.lmu.ifi.bio.crco.connector.LocalService;
-import de.lmu.ifi.bio.crco.data.Species;
-import de.lmu.ifi.bio.crco.operation.ortholog.OrthologMappingInformation;
-import de.lmu.ifi.bio.crco.util.Pair;
+import de.lmu.ifi.bio.croco.connector.LocalService;
+import de.lmu.ifi.bio.croco.data.Species;
+import de.lmu.ifi.bio.croco.operation.ortholog.OrthologMappingInformation;
+import de.lmu.ifi.bio.croco.util.Pair;
 
 /**
  * Ortholog mapping selection dialogs for a given species.

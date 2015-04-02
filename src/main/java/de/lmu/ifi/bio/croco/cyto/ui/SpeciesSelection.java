@@ -9,7 +9,7 @@ import javax.swing.JComboBox;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 
-import de.lmu.ifi.bio.crco.data.Species;
+import de.lmu.ifi.bio.croco.data.Species;
 
 public class SpeciesSelection extends JDialog{
 

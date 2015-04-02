@@ -18,7 +18,7 @@ import org.cytoscape.property.CyProperty;
 import org.cytoscape.service.util.internal.utils.ServiceUtil;
 import org.osgi.framework.BundleContext;
 
-import de.lmu.ifi.bio.crco.util.CroCoLogger;
+import de.lmu.ifi.bio.croco.util.CroCoLogger;
 import de.lmu.ifi.bio.croco.cyto.util.CytoscapeProperties;
 
 /**

@@ -11,8 +11,8 @@ import javax.swing.JTree;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 
-import de.lmu.ifi.bio.crco.network.NetworkSummary;
-import de.lmu.ifi.bio.crco.util.CroCoLogger;
+import de.lmu.ifi.bio.croco.network.NetworkSummary;
+import de.lmu.ifi.bio.croco.util.CroCoLogger;
 
 /**
  * Dialog to show the network operation summary.

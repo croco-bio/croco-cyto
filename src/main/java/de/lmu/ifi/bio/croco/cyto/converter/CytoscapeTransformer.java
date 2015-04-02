@@ -15,12 +15,12 @@ import org.cytoscape.model.CyTableManager;
 import org.cytoscape.service.util.internal.utils.ServiceUtil;
 import org.osgi.framework.BundleContext;
 
-import de.lmu.ifi.bio.crco.data.Entity;
-import de.lmu.ifi.bio.crco.network.Network;
-import de.lmu.ifi.bio.crco.operation.converter.Convert;
-import de.lmu.ifi.bio.crco.util.CroCoLogger;
-import de.lmu.ifi.bio.crco.util.StringUtil;
-import de.lmu.ifi.bio.crco.util.Tuple;
+import de.lmu.ifi.bio.croco.data.Entity;
+import de.lmu.ifi.bio.croco.network.Network;
+import de.lmu.ifi.bio.croco.operation.converter.Convert;
+import de.lmu.ifi.bio.croco.util.CroCoLogger;
+import de.lmu.ifi.bio.croco.util.StringUtil;
+import de.lmu.ifi.bio.croco.util.Tuple;
 
 public class CytoscapeTransformer implements Convert<org.cytoscape.model.CyNetwork>{
 	private BundleContext context;

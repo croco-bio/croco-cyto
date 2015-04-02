@@ -10,7 +10,7 @@ import javax.swing.JTable;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.TableCellRenderer;
 
-import de.lmu.ifi.bio.crco.operation.GeneralOperation;
+import de.lmu.ifi.bio.croco.operation.GeneralOperation;
 
 public class OperationsTable extends JTable {
 	

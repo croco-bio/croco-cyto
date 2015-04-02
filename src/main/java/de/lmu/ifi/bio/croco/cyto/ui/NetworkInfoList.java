@@ -7,11 +7,11 @@ import java.util.Map.Entry;
 import javax.swing.JTable;
 import javax.swing.table.AbstractTableModel;
 
-import de.lmu.ifi.bio.crco.connector.QueryService;
-import de.lmu.ifi.bio.crco.data.NetworkHierachyNode;
-import de.lmu.ifi.bio.crco.data.Option;
-import de.lmu.ifi.bio.crco.data.Species;
-import de.lmu.ifi.bio.crco.util.Pair;
+import de.lmu.ifi.bio.croco.connector.QueryService;
+import de.lmu.ifi.bio.croco.data.NetworkHierachyNode;
+import de.lmu.ifi.bio.croco.data.Option;
+import de.lmu.ifi.bio.croco.data.Species;
+import de.lmu.ifi.bio.croco.util.Pair;
 
 public class NetworkInfoList extends JTable {
     QueryService service;

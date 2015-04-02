@@ -13,7 +13,7 @@ import org.cytoscape.model.CyTableUtil;
 import org.cytoscape.service.util.internal.utils.ServiceUtil;
 import org.osgi.framework.BundleContext;
 
-import de.lmu.ifi.bio.crco.util.CroCoLogger;
+import de.lmu.ifi.bio.croco.util.CroCoLogger;
 
 
 /**

@@ -18,11 +18,11 @@ import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
 import javax.swing.tree.TreeSelectionModel;
 
-import de.lmu.ifi.bio.crco.connector.LocalService;
-import de.lmu.ifi.bio.crco.connector.QueryService;
-import de.lmu.ifi.bio.crco.data.ContextTreeNode;
-import de.lmu.ifi.bio.crco.data.HierachyNode;
-import de.lmu.ifi.bio.crco.util.CroCoLogger;
+import de.lmu.ifi.bio.croco.connector.LocalService;
+import de.lmu.ifi.bio.croco.connector.QueryService;
+import de.lmu.ifi.bio.croco.data.ContextTreeNode;
+import de.lmu.ifi.bio.croco.data.HierachyNode;
+import de.lmu.ifi.bio.croco.util.CroCoLogger;
 
 public class GOBrowserTree extends JTree implements TreeSelectionListener, TreeWillExpandListener{
     private QueryService service;

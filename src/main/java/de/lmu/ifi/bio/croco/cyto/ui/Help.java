@@ -27,8 +27,8 @@ import net.miginfocom.swing.MigLayout;
 
 import org.slf4j.LoggerFactory;
 
-import de.lmu.ifi.bio.crco.util.CroCoLogger;
-import de.lmu.ifi.bio.crco.util.Pair;
+import de.lmu.ifi.bio.croco.util.CroCoLogger;
+import de.lmu.ifi.bio.croco.util.Pair;
 
 public class Help extends JDialog {
 	

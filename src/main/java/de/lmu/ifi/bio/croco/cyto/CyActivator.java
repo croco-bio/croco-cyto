@@ -15,8 +15,8 @@ import org.cytoscape.work.undo.UndoSupport;
 import org.osgi.framework.BundleContext;
 import org.slf4j.LoggerFactory;
 
-import de.lmu.ifi.bio.crco.util.CroCoLogger;
-import de.lmu.ifi.bio.crco.util.CroCoProperties;
+import de.lmu.ifi.bio.croco.util.CroCoLogger;
+import de.lmu.ifi.bio.croco.util.CroCoProperties;
 import de.lmu.ifi.bio.croco.cyto.layout.CopyLayout;
 import de.lmu.ifi.bio.croco.cyto.layout.GroupLayout;
 import de.lmu.ifi.bio.croco.cyto.util.CytoscapeProperties;

@@ -4,7 +4,7 @@ import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.UnsupportedFlavorException;
 
-import de.lmu.ifi.bio.crco.data.NetworkOperationNode;
+import de.lmu.ifi.bio.croco.data.NetworkOperationNode;
 
 public class OperatorableTransferable implements Transferable {
 	private NetworkOperationNode node;

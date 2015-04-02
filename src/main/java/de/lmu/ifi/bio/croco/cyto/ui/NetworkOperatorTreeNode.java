@@ -5,7 +5,7 @@ import java.util.HashMap;
 
 import javax.swing.tree.TreeNode;
 
-import de.lmu.ifi.bio.crco.data.NetworkOperationNode;
+import de.lmu.ifi.bio.croco.data.NetworkOperationNode;
 
 /**
  * A wrapper for NetworkOperationNode nodes (see croco-api).

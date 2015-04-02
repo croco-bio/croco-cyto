@@ -6,7 +6,7 @@ import java.awt.datatransfer.UnsupportedFlavorException;
 import java.util.ArrayList;
 import java.util.List;
 
-import de.lmu.ifi.bio.crco.data.NetworkHierachyNode;
+import de.lmu.ifi.bio.croco.data.NetworkHierachyNode;
 
 
 public class NetworkHierachyNodeTransferable implements Transferable {

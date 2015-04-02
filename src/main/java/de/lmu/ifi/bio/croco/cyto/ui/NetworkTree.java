@@ -25,11 +25,11 @@ import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
 import javax.swing.tree.TreeSelectionModel;
 
-import de.lmu.ifi.bio.crco.connector.QueryService;
-import de.lmu.ifi.bio.crco.data.CroCoNode;
-import de.lmu.ifi.bio.crco.data.NetworkHierachyNode;
-import de.lmu.ifi.bio.crco.util.CroCoLogger;
-import de.lmu.ifi.bio.crco.util.ontology.NetworkOntology.LeafNode;
+import de.lmu.ifi.bio.croco.connector.QueryService;
+import de.lmu.ifi.bio.croco.data.CroCoNode;
+import de.lmu.ifi.bio.croco.data.NetworkHierachyNode;
+import de.lmu.ifi.bio.croco.util.CroCoLogger;
+import de.lmu.ifi.bio.croco.util.ontology.NetworkOntology.LeafNode;
 import de.lmu.ifi.bio.croco.cyto.ui.transferable.NetworkHierachyNodeTransferable;
 
 

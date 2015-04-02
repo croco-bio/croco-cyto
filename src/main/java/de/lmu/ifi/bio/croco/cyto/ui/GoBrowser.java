@@ -17,10 +17,10 @@ import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 
 import net.miginfocom.swing.MigLayout;
-import de.lmu.ifi.bio.crco.connector.LocalService;
-import de.lmu.ifi.bio.crco.connector.QueryService;
-import de.lmu.ifi.bio.crco.data.ContextTreeNode;
-import de.lmu.ifi.bio.crco.util.CroCoLogger;
+import de.lmu.ifi.bio.croco.connector.LocalService;
+import de.lmu.ifi.bio.croco.connector.QueryService;
+import de.lmu.ifi.bio.croco.data.ContextTreeNode;
+import de.lmu.ifi.bio.croco.util.CroCoLogger;
 import de.lmu.ifi.bio.croco.cyto.ui.GOBrowserTree.GoNode;
 
 /**

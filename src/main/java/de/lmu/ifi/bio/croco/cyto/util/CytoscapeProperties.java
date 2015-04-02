@@ -10,8 +10,8 @@ import org.cytoscape.property.AbstractConfigDirPropsReader;
 import org.cytoscape.property.CyProperty;
 import org.slf4j.LoggerFactory;
 
-import de.lmu.ifi.bio.crco.util.CroCoLogger;
-import de.lmu.ifi.bio.crco.util.CroCoProperties;
+import de.lmu.ifi.bio.croco.util.CroCoLogger;
+import de.lmu.ifi.bio.croco.util.CroCoProperties;
 
 public class CytoscapeProperties extends AbstractConfigDirPropsReader {
 	public static String baseDirStr = "de.lmu.ifi.bio.croco.cyto.baseDir";
