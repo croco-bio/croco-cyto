@@ -9,7 +9,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>de.lmu.ifi.bio.croco</groupId>
 	<artifactId>croco-cyto</artifactId>
-	<version>0.1</version>
+	<version>1.0</version>
 		<name>${bundle.symbolicName}</name>
 	<packaging>bundle</packaging>
 
@@ -171,7 +171,7 @@
 			<dependency>
 			<groupId>de.lmu.ifi.bio.croco</groupId>
 			<artifactId>croco-api</artifactId>
-			<version>0.1</version>
+			<version>1.0</version>
 	
 		</dependency>
 		 
@@ -210,11 +210,6 @@
 			<version>3.0.1</version>
 		 </dependency>
 
-		<dependency>
-			<groupId>net.sf.trove4j</groupId>
-			<artifactId>trove4j</artifactId>
-			<version>3.0.3</version>
-		</dependency>
 
 		<dependency>
 			<groupId>com.miglayout</groupId>

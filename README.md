@@ -36,9 +36,9 @@ croco-cyto build (from source)
 =========
 
 Install
-mvn install -Dmaven.test.skip=true
+mvn install
 
 The install command creates a bundles jar with all dependencies.
 
 In Cytoscape:
-install mvn:de.lmu.ifi.bio.croco/croco-cyto/0.1
+install mvn:de.lmu.ifi.bio.croco/croco-cyto/1.0
