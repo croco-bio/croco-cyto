@@ -46,6 +46,10 @@ The install command creates a bundles jar with all dependencies.
 In Cytoscape:
 install mvn:de.lmu.ifi.bio.croco/croco-cyto/1.0
 
+Note
+=========
+The newest source code may not always be compatible with the remote croco instance. For croco-service compatible versions see: http://services.bio.ifi.lmu.de/croco-web.
+
 Contact & Bug-reports & Suggestions
 =========
 We are constantly improving the croco components. So if you find any bugs, or have general suggestions/comments, please send a mail to: robert.pesch@bio.ifi.lmu.de
