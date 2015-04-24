@@ -27,36 +27,37 @@ import javax.swing.tree.TreeSelectionModel;
 
 import de.lmu.ifi.bio.croco.connector.QueryService;
 import de.lmu.ifi.bio.croco.data.CroCoNode;
-import de.lmu.ifi.bio.croco.data.NetworkHierachyNode;
+import de.lmu.ifi.bio.croco.data.Identifiable;
+import de.lmu.ifi.bio.croco.data.NetworkMetaInformation;
 import de.lmu.ifi.bio.croco.util.CroCoLogger;
 import de.lmu.ifi.bio.croco.util.ontology.NetworkOntology.LeafNode;
-import de.lmu.ifi.bio.croco.cyto.ui.transferable.NetworkHierachyNodeTransferable;
+import de.lmu.ifi.bio.croco.cyto.ui.transferable.NetworkMetaInformationTransferable;
 
 
 public class NetworkTree extends JTree implements TreeSelectionListener,DragGestureListener,DragSourceListener{
 
 	private static final long serialVersionUID = 1L;
-	CroCoNode origRoot;
-	CroCoNode root;
+	CroCoNode<NetworkMetaInformation> origRoot;
+	CroCoNode<NetworkMetaInformation> root;
 	
-	public CroCoNode getRoot()
+	public CroCoNode<NetworkMetaInformation> getRoot()
 	{
 	    return root;
 	}
-	private static HashMap<CroCoNode,TreeNode> treeNodeMapping = new HashMap<CroCoNode,TreeNode> ();
+	private static HashMap<CroCoNode<NetworkMetaInformation>,TreeNode> treeNodeMapping = new HashMap<CroCoNode<NetworkMetaInformation>,TreeNode> ();
     
 	public class NetworkHierachyTreeNode implements TreeNode {
 
-	    private CroCoNode operatorable;
+	    private CroCoNode<NetworkMetaInformation> operatorable;
 
 
 	    
-	    public CroCoNode getOperatorable(){
+	    public CroCoNode<NetworkMetaInformation> getOperatorable(){
 	        return operatorable;
 	    }
 
 	    
-	    public NetworkHierachyTreeNode(CroCoNode operatorable){
+	    public NetworkHierachyTreeNode(CroCoNode<NetworkMetaInformation> operatorable){
 	        this.operatorable = operatorable;
 	    }
 
@@ -64,7 +65,7 @@ public class NetworkTree extends JTree implements TreeSelectionListener,DragGest
 
 	    @Override
 	    public TreeNode getChildAt(int childIndex) {
-	        CroCoNode childNode = operatorable.getChildren().get(childIndex);
+	        CroCoNode<NetworkMetaInformation> childNode = operatorable.getChildren().get(childIndex);
 	        return getTreeNode(childNode);
 	    }
 
@@ -135,12 +136,12 @@ public class NetworkTree extends JTree implements TreeSelectionListener,DragGest
 
 		CroCoLogger.getLogger().info("Load root");
 
-		CroCoNode rootNode = null;
+		CroCoNode<NetworkMetaInformation> rootNode = null;
 		try{
-			CroCoNode root = service.getNetworkOntology();
+			CroCoNode<NetworkMetaInformation> root = service.getNetworkOntology(false);
 			this.origRoot = root;
-			rootNode= new CroCoNode(root);
-			rootNode.setNetworks(root.getNetworks());
+			rootNode= new CroCoNode<NetworkMetaInformation>(root);
+			rootNode.setData(root.getData());
 			this.root = rootNode;
 		}catch(Exception e){
 			throw new RuntimeException(e);
@@ -191,8 +192,8 @@ public class NetworkTree extends JTree implements TreeSelectionListener,DragGest
 		return rootNode;
 	}
 	*/
-	public List<NetworkHierachyNode> getLeafs(NetworkHierachyTreeNode node){
-		List<NetworkHierachyNode> leafs = new ArrayList<NetworkHierachyNode>();
+	public List<NetworkMetaInformation> getLeafs(NetworkHierachyTreeNode node){
+		List<NetworkMetaInformation> leafs = new ArrayList<NetworkMetaInformation>();
 		Stack<NetworkHierachyTreeNode> nodes = new Stack<NetworkHierachyTreeNode>();
 		nodes.add(node);
 		HashSet<Integer> taxIds = new HashSet<Integer>();
@@ -200,12 +201,12 @@ public class NetworkTree extends JTree implements TreeSelectionListener,DragGest
 			NetworkHierachyTreeNode top = nodes.pop();
 
 			if ( top.isLeaf() ) {
-			    NetworkHierachyNode nh = top.getOperatorable().getNetworks().iterator().next();
+			    NetworkMetaInformation nh = top.getOperatorable().getData().iterator().next();
 			    
 				taxIds.add(nh.getTaxId());
 				if ( top.getOperatorable() instanceof CroCoNode)
 
-					leafs.add( new  NetworkHierachyNode( nh));
+					leafs.add( nh);
 			}else{
 				for(int i = 0 ; i< top.getChildCount(); i++){
 					nodes.add((NetworkHierachyTreeNode)(top.getChildAt(i)));
@@ -229,10 +230,10 @@ public class NetworkTree extends JTree implements TreeSelectionListener,DragGest
 
 		NetworkHierachyTreeNode node = (NetworkHierachyTreeNode) path.getLastPathComponent();
 
-		NetworkHierachyNodeTransferable toTransfer = null;
+		NetworkMetaInformationTransferable toTransfer = null;
 		try {
 
-			toTransfer = new NetworkHierachyNodeTransferable(new ArrayList<NetworkHierachyNode>(node.getOperatorable().getNetworks()));
+			toTransfer = new NetworkMetaInformationTransferable(new ArrayList<NetworkMetaInformation>(node.getOperatorable().getData()));
 		} catch (ClassNotFoundException e1) {
 			e1.printStackTrace();
 		}

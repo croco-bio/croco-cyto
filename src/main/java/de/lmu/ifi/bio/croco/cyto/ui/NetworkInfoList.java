@@ -8,7 +8,7 @@ import javax.swing.JTable;
 import javax.swing.table.AbstractTableModel;
 
 import de.lmu.ifi.bio.croco.connector.QueryService;
-import de.lmu.ifi.bio.croco.data.NetworkHierachyNode;
+import de.lmu.ifi.bio.croco.data.NetworkMetaInformation;
 import de.lmu.ifi.bio.croco.data.Option;
 import de.lmu.ifi.bio.croco.data.Species;
 import de.lmu.ifi.bio.croco.util.Pair;
@@ -22,7 +22,7 @@ public class NetworkInfoList extends JTable {
 		
 		
 		
-		public TableModel(NetworkHierachyNode node) {
+		public TableModel(NetworkMetaInformation node) {
 			if ( node != null){
 				
 				try{
@@ -88,7 +88,7 @@ public class NetworkInfoList extends JTable {
 		this.service = service;
 	}
 
-	public void update(NetworkHierachyNode node){
+	public void update(NetworkMetaInformation node){
 		
 		this.setModel(new TableModel(node));
 		

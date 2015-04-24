@@ -7,7 +7,6 @@ import java.awt.dnd.DnDConstants;
 import java.awt.dnd.DragGestureEvent;
 import java.awt.dnd.DragGestureListener;
 import java.awt.dnd.DragSource;
-import java.awt.dnd.DragSourceContext;
 import java.awt.dnd.DragSourceDragEvent;
 import java.awt.dnd.DragSourceDropEvent;
 import java.awt.dnd.DragSourceEvent;
@@ -41,8 +40,10 @@ import javax.swing.tree.TreePath;
 import org.slf4j.LoggerFactory;
 
 import de.lmu.ifi.bio.croco.connector.QueryService;
+import de.lmu.ifi.bio.croco.cyto.ui.transferable.NetworkMetaInformationTransferable;
+import de.lmu.ifi.bio.croco.cyto.ui.transferable.OperatorableTransferable;
 import de.lmu.ifi.bio.croco.data.ContextTreeNode;
-import de.lmu.ifi.bio.croco.data.NetworkHierachyNode;
+import de.lmu.ifi.bio.croco.data.NetworkMetaInformation;
 import de.lmu.ifi.bio.croco.data.NetworkOperationNode;
 import de.lmu.ifi.bio.croco.data.Species;
 import de.lmu.ifi.bio.croco.data.exceptions.OperationNotPossibleException;
@@ -53,8 +54,6 @@ import de.lmu.ifi.bio.croco.operation.SupportFilter;
 import de.lmu.ifi.bio.croco.operation.Transfer;
 import de.lmu.ifi.bio.croco.operation.ortholog.OrthologMappingInformation;
 import de.lmu.ifi.bio.croco.operation.ortholog.OrthologRepository;
-import de.lmu.ifi.bio.croco.cyto.ui.transferable.NetworkHierachyNodeTransferable;
-import de.lmu.ifi.bio.croco.cyto.ui.transferable.OperatorableTransferable;
 
 /**
  * The NetworkOperatorTree allows to combine networks and network operations.
@@ -456,12 +455,12 @@ public class NetworkOperatorTree extends JTree implements DropTargetListener,Dra
 			
 		}
 	}
-	private NetworkOperationNode getNetworkOperationNode(NetworkHierachyNode nh)
+	private NetworkOperationNode getNetworkOperationNode(NetworkMetaInformation nh)
 	{
 	    ReadNetwork reader = new ReadNetwork();
         reader.setInput(ReadNetwork.GlobalRepository, false);
         reader.setInput(ReadNetwork.QueryService, service);
-        reader.setInput(ReadNetwork.NetworkHierachyNode, nh);
+        reader.setInput(ReadNetwork.NetworkMetaInformation, nh);
        /*
         if( context != null){
             reader.setInput(ReadNetwork.ContextTreeNode, context);
@@ -488,10 +487,10 @@ public class NetworkOperatorTree extends JTree implements DropTargetListener,Dra
 	    
 	    return previous_context;
 	}
-	public void addNetworks(Collection<NetworkHierachyNode> n,NetworkOperationNode selectedRoot ){
+	public void addNetworks(Collection<NetworkMetaInformation> n,NetworkOperationNode selectedRoot ){
 	  
 		List<NetworkOperationNode> networkOperationNodes = new ArrayList<NetworkOperationNode>();
-		for(NetworkHierachyNode nh : n){
+		for(NetworkMetaInformation nh : n){
 		    
 		    networkOperationNodes.add(getNetworkOperationNode(nh));
 		}
@@ -514,22 +513,22 @@ public class NetworkOperatorTree extends JTree implements DropTargetListener,Dra
 		
 		model.reload();
 	}
-	public void addNetworks(List<NetworkHierachyNode> n,NetworkOperatorTreeNode selectedRoot ){
+	public void addNetworks(List<NetworkMetaInformation> n,NetworkOperatorTreeNode selectedRoot ){
 		this.addNetworks(n,selectedRoot.getOperatorable());
 	}
 	
 	@Override
 	public void drop(DropTargetDropEvent e) {
 		Transferable tr = e.getTransferable();
-		if (tr.isDataFlavorSupported( NetworkHierachyNodeTransferable.INFO_FLAVOR) ) { //moving networks
+		if (tr.isDataFlavorSupported( NetworkMetaInformationTransferable.INFO_FLAVOR) ) { //moving networks
 			try {
 				
-				List<NetworkHierachyNode> n = (List<NetworkHierachyNode>) tr.getTransferData( NetworkHierachyNodeTransferable.INFO_FLAVOR );
+				List<NetworkMetaInformation> n = (List<NetworkMetaInformation>) tr.getTransferData( NetworkMetaInformationTransferable.INFO_FLAVOR );
 				NetworkOperatorTreeNode selectedRoot = getSelectedDropRoot(e);
 				
 		        Set<Integer> taxIds = new HashSet<Integer>();
 		        Integer taxId = null;
-		        for(NetworkHierachyNode newNode:n ){
+		        for(NetworkMetaInformation newNode:n ){
 		            taxIds.add(newNode.getTaxId());
 		            taxId = newNode.getTaxId();
 		        }
@@ -546,7 +545,7 @@ public class NetworkOperatorTree extends JTree implements DropTargetListener,Dra
 		        {
 		            List<NetworkOperationNode> nops = new ArrayList<NetworkOperationNode>();
 		            
-		            for(NetworkHierachyNode newNode:n )
+		            for(NetworkMetaInformation newNode:n )
 		            {
 		                nops.add(getNetworkOperationNode(newNode));
 		            }

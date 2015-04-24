@@ -69,7 +69,7 @@ import de.lmu.ifi.bio.croco.connector.RemoteWebService;
 import de.lmu.ifi.bio.croco.data.CroCoNode;
 import de.lmu.ifi.bio.croco.data.CroCoNode.GeneralFilter;
 import de.lmu.ifi.bio.croco.data.Entity;
-import de.lmu.ifi.bio.croco.data.NetworkHierachyNode;
+import de.lmu.ifi.bio.croco.data.NetworkMetaInformation;
 import de.lmu.ifi.bio.croco.data.NetworkOperationNode;
 import de.lmu.ifi.bio.croco.data.NetworkType;
 import de.lmu.ifi.bio.croco.data.Option;
@@ -329,23 +329,23 @@ public class CroCoCyto extends AbstractWebServiceGUIClient  implements NetworkIm
 		            	GeneralFilter f5 = new GeneralFilter(Option.OpenChromType,"DNase");
 		            	GeneralFilter f6 = new GeneralFilter(Option.cellLine,"MEL");
                         
-		            	CroCoNode mel = networkTree.getRoot().getNode("MEL", f1,f2,f3,f4,f5,f6);
+		            	Set<NetworkMetaInformation> mel = networkTree.getRoot().getData("MEL", f1,f2,f3,f4,f5,f6);
 		            	
 						NetworkOperationNode melInterst = new NetworkOperationNode(parent,Species.Mouse.getTaxId(),new Intersect());
 						
-						operations.addNetworks(mel.getNetworks(), melInterst);
+						operations.addNetworks(mel, melInterst);
 						transfer.addChild(melInterst);
 						
 						LoggerFactory.getLogger(CroCoCyto.class).error("Read K562");
                         
 						f1 = new GeneralFilter(Option.TaxId,9606+"");
 						f6 = new GeneralFilter(Option.cellLine,"K562");
-						CroCoNode k562 = networkTree.getRoot().getNode("MEL", f1,f2,f3,f4,f5,f6);
+						Set<NetworkMetaInformation> k562 = networkTree.getRoot().getData("MEL", f1,f2,f3,f4,f5,f6);
                         
 						
 						NetworkOperationNode k562Interest= new NetworkOperationNode(parent,Species.Human.getTaxId(),new Intersect());
 						
-						operations.addNetworks(k562.getNetworks(), k562Interest);
+						operations.addNetworks(k562, k562Interest);
                         
 						NetworkOperationNode intersect = new NetworkOperationNode(parent,Species.Human.getTaxId(),new Intersect());
 			            intersect.addChild(transfer);
@@ -378,7 +378,7 @@ public class CroCoCyto extends AbstractWebServiceGUIClient  implements NetworkIm
 									@Override
 									public void actionPerformed(ActionEvent e) {
 										NetworkHierachyTreeNode selected = networkTree.getSelectedNode();
-										operations.addNetworks(new ArrayList<NetworkHierachyNode>(selected.getOperatorable().getNetworks()),(NetworkOperatorTreeNode)operations.getModel().getRoot() );
+										operations.addNetworks(new ArrayList<NetworkMetaInformation>(selected.getOperatorable().getData()),(NetworkOperatorTreeNode)operations.getModel().getRoot() );
 
 									}
 								});
@@ -615,7 +615,7 @@ public class CroCoCyto extends AbstractWebServiceGUIClient  implements NetworkIm
 								n+=1;
 								taskMonitor.setProgress((double)n/(double)k);
 								if ( ReadNetwork.class.isInstance(operation)){
-									taskMonitor.setStatusMessage("Read network:" + operation.getParameter(ReadNetwork.NetworkHierachyNode).getName());
+									taskMonitor.setStatusMessage("Read network:" + operation.getParameter(ReadNetwork.NetworkMetaInformation).getName());
 								}else{
 									taskMonitor.setStatusMessage(operation.getClass().getSimpleName());
 								}
@@ -724,7 +724,7 @@ public class CroCoCyto extends AbstractWebServiceGUIClient  implements NetworkIm
 				  if ( node.getOperator() instanceof ReadNetwork){
 					
 					  ReadNetwork r = (ReadNetwork) node.getOperator();
-					  NetworkHierachyNode n =  r.getParameter(ReadNetwork.NetworkHierachyNode);
+					  NetworkMetaInformation n =  r.getParameter(ReadNetwork.NetworkMetaInformation);
 					  showNetworkInfo(networkInfo, image, n);
 				  }
 					
@@ -739,15 +739,15 @@ public class CroCoCyto extends AbstractWebServiceGUIClient  implements NetworkIm
 			  public void valueChanged(TreeSelectionEvent a) {
 				  NetworkHierachyTreeNode node = (NetworkHierachyTreeNode) a.getPath().getLastPathComponent();
 				
-				  if ( node.getOperatorable().getNetworks().size() == 1)
-				      showNetworkInfo(networkInfo, image,  node.getOperatorable().getNetworks().iterator().next());
+				  if ( node.getOperatorable().getData().size() == 1)
+				      showNetworkInfo(networkInfo, image,  node.getOperatorable().getData().iterator().next());
 			  }
 
 		  });
 		  
 		// return view;
 	 }
-	 private void showNetworkInfo(NetworkInfoList networkInfo, JLabel image, NetworkHierachyNode nh  ){
+	 private void showNetworkInfo(NetworkInfoList networkInfo, JLabel image, NetworkMetaInformation nh  ){
          
 		 networkInfo.update(nh);
 		 Image img = null;

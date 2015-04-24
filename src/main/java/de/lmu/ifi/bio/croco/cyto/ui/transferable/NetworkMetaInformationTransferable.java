@@ -6,16 +6,16 @@ import java.awt.datatransfer.UnsupportedFlavorException;
 import java.util.ArrayList;
 import java.util.List;
 
-import de.lmu.ifi.bio.croco.data.NetworkHierachyNode;
+import de.lmu.ifi.bio.croco.data.NetworkMetaInformation;
 
 
-public class NetworkHierachyNodeTransferable implements Transferable {
-	private List<NetworkHierachyNode> nodes;
-	final public static DataFlavor INFO_FLAVOR =new DataFlavor(NetworkHierachyNode.class, "NetworkHierachyNode");
+public class NetworkMetaInformationTransferable implements Transferable {
+	private List<NetworkMetaInformation> nodes;
+	final public static DataFlavor INFO_FLAVOR =new DataFlavor(NetworkMetaInformation.class, "NetworkMetaInformation");
 
 	static DataFlavor flavors[] = {INFO_FLAVOR };
-	public NetworkHierachyNodeTransferable(List<NetworkHierachyNode> nodes) throws ClassNotFoundException {
-		this.nodes = new ArrayList<NetworkHierachyNode>(nodes);
+	public NetworkMetaInformationTransferable(List<NetworkMetaInformation> nodes) throws ClassNotFoundException {
+		this.nodes = new ArrayList<NetworkMetaInformation>(nodes);
 		
 	}
 	
