@@ -203,7 +203,6 @@ public class OrthologMappingSelection extends JDialog{
 	/**
 	 * Sets the layout and registers the event listener.
 	 */
-	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public void init() {
 
 		JPanel panel = new JPanel();

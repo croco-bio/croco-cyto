@@ -4,8 +4,6 @@ import java.awt.Desktop;
 import java.awt.event.ActionEvent;
 import java.net.URI;
 import java.util.List;
-import java.util.Properties;
-
 import javax.swing.JOptionPane;
 
 import org.cytoscape.application.CyApplicationManager;
@@ -14,12 +12,10 @@ import org.cytoscape.model.CyEdge;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNode;
 import org.cytoscape.model.CyTableUtil;
-import org.cytoscape.property.CyProperty;
 import org.cytoscape.service.util.internal.utils.ServiceUtil;
 import org.osgi.framework.BundleContext;
 
 import de.lmu.ifi.bio.croco.util.CroCoLogger;
-import de.lmu.ifi.bio.croco.cyto.util.CytoscapeProperties;
 
 /**
  * @author pesch

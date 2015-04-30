@@ -5,9 +5,7 @@ import static org.cytoscape.work.ServiceProperties.PREFERRED_MENU;
 
 import java.util.Properties;
 
-import org.apache.log4j.PropertyConfigurator;
 import org.cytoscape.application.CyApplicationManager;
-import org.cytoscape.property.CyProperty;
 import org.cytoscape.service.util.AbstractCyActivator;
 import org.cytoscape.view.layout.CyLayoutAlgorithm;
 import org.cytoscape.view.layout.CyLayoutAlgorithmManager;

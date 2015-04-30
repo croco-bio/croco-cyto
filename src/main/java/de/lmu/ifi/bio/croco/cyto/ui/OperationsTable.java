@@ -1,16 +1,11 @@
 package de.lmu.ifi.bio.croco.cyto.ui;
 
 import java.awt.Component;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
-
 import javax.swing.JButton;
 import javax.swing.JTable;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.TableCellRenderer;
-
-import de.lmu.ifi.bio.croco.operation.GeneralOperation;
 
 public class OperationsTable extends JTable {
 	

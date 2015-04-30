@@ -66,7 +66,6 @@ import org.slf4j.LoggerFactory;
 import de.lmu.ifi.bio.croco.connector.BufferedService;
 import de.lmu.ifi.bio.croco.connector.QueryService;
 import de.lmu.ifi.bio.croco.connector.RemoteWebService;
-import de.lmu.ifi.bio.croco.data.CroCoNode;
 import de.lmu.ifi.bio.croco.data.CroCoNode.GeneralFilter;
 import de.lmu.ifi.bio.croco.data.Entity;
 import de.lmu.ifi.bio.croco.data.NetworkMetaInformation;
@@ -179,7 +178,7 @@ public class CroCoCyto extends AbstractWebServiceGUIClient  implements NetworkIm
 			public void actionPerformed(ActionEvent e) {
 				String url = connectionField.getText();
 				File buffer = new File(bufferDir.getText());
-				
+				System.out.println("Connect to:" + url);
 				//create dir for buffer
 				if (! buffer.exists())
 				{
@@ -194,11 +193,17 @@ public class CroCoCyto extends AbstractWebServiceGUIClient  implements NetworkIm
 				try{
 				    
 			        RemoteWebService remoteService = new RemoteWebService(url);
-                    Long version = remoteService.getVersion();
+                    Long version = remoteService.getRemoteVersion();
+                    
+                    if (!version.equals(QueryService.version))
+                    {
+                        JOptionPane.showMessageDialog(null, String.format("Please update croco-cyto.\nServer version: %d; croco-cyto version: %d",version, QueryService.version, "Version conflict" , JOptionPane.ERROR_MESSAGE));
+                        return;
+                    }
+                    
                     LoggerFactory.getLogger(getClass()).info("Service version:" + version);
 
 			        service = new BufferedService(remoteService, buffer );
-			        
 			        //TODO: check for version!
 					
 				}catch(Exception ex){

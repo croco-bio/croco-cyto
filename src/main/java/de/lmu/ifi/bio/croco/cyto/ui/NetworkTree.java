@@ -4,7 +4,6 @@ import java.awt.dnd.DnDConstants;
 import java.awt.dnd.DragGestureEvent;
 import java.awt.dnd.DragGestureListener;
 import java.awt.dnd.DragSource;
-import java.awt.dnd.DragSourceContext;
 import java.awt.dnd.DragSourceDragEvent;
 import java.awt.dnd.DragSourceDropEvent;
 import java.awt.dnd.DragSourceEvent;
@@ -27,7 +26,6 @@ import javax.swing.tree.TreeSelectionModel;
 
 import de.lmu.ifi.bio.croco.connector.QueryService;
 import de.lmu.ifi.bio.croco.data.CroCoNode;
-import de.lmu.ifi.bio.croco.data.Identifiable;
 import de.lmu.ifi.bio.croco.data.NetworkMetaInformation;
 import de.lmu.ifi.bio.croco.util.CroCoLogger;
 import de.lmu.ifi.bio.croco.util.ontology.NetworkOntology.LeafNode;
@@ -135,10 +133,9 @@ public class NetworkTree extends JTree implements TreeSelectionListener,DragGest
 	public NetworkTree(QueryService service)  {
 
 		CroCoLogger.getLogger().info("Load root");
-
 		CroCoNode<NetworkMetaInformation> rootNode = null;
 		try{
-			CroCoNode<NetworkMetaInformation> root = service.getNetworkOntology(false);
+			CroCoNode<NetworkMetaInformation> root = service.getNetworkOntology(true);
 			this.origRoot = root;
 			rootNode= new CroCoNode<NetworkMetaInformation>(root);
 			rootNode.setData(root.getData());
