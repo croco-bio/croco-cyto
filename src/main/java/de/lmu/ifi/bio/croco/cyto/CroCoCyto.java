@@ -178,7 +178,6 @@ public class CroCoCyto extends AbstractWebServiceGUIClient  implements NetworkIm
 			public void actionPerformed(ActionEvent e) {
 				String url = connectionField.getText();
 				File buffer = new File(bufferDir.getText());
-				System.out.println("Connect to:" + url);
 				//create dir for buffer
 				if (! buffer.exists())
 				{
