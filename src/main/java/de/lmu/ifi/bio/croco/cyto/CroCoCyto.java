@@ -214,7 +214,7 @@ public class CroCoCyto extends AbstractWebServiceGUIClient  implements NetworkIm
 				createNetworkView(gui);
 				
                 
-                gui.revalidate();
+                gui.validate();
                 gui.repaint();
                 
                 //content.revalidate();
@@ -332,7 +332,7 @@ public class CroCoCyto extends AbstractWebServiceGUIClient  implements NetworkIm
 		  
 		  final JButton okButton = new JButton("<html><FONT color=\"#FF2211\"><b>Create Final Network</b></font></html>");
 		  okButton.setEnabled(false);
-		  okButton.setToolTipText("Select networks from the croco-repo and drop them into the network selection list");
+		  okButton.setToolTipText("Creates the defined networks and imports them into Cytoscape.");
 		  //view.add(okButton,"align right,grow,wrap");
 		  
 		
