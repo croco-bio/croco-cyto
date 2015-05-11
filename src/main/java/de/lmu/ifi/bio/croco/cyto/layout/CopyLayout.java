@@ -131,12 +131,10 @@ public class CopyLayout extends CroCoLayout{
 
 		showDialog(view, networkViewManager.getNetworkViewSet());
 		final HashMap<String,View<CyNode>> idToNodeView = new HashMap<String,View<CyNode>>();
-		System.out.println(fromNetwork);
 		for(View<CyNode> nodeView : fromNetwork.getNodeViews()){
 			String nodeId = fromNetwork.getModel().getRow(nodeView.getModel()).get(CyNetwork.NAME,String.class);
 			idToNodeView.put(nodeId, nodeView);
 		}
-		System.out.println(idToNodeView);
 		TaskIterator tk = new TaskIterator();
 		tk.append(new Task(){
 
@@ -153,10 +151,8 @@ public class CopyLayout extends CroCoLayout{
 
 						View<CyNode> sourceNode = idToNodeView.get(nodeId);
 						if ( sourceNode == null) {
-							System.out.println("Skip" + nodeId);
 							continue;
 						}
-						System.out.println("Apply on:" + nodeId);
 						Double xLoc = sourceNode.getVisualProperty(BasicVisualLexicon.NODE_X_LOCATION);
 						Double yLoc = sourceNode.getVisualProperty(BasicVisualLexicon.NODE_Y_LOCATION);
 						node.setVisualProperty(BasicVisualLexicon.NODE_X_LOCATION, xLoc);
