@@ -131,9 +131,12 @@ public class NetworkTree extends JTree implements TreeSelectionListener,DragGest
 	private DragSource dragSource = null;
 
 	public NetworkTree(QueryService service)  {
-
+	    
+	    if ( service == null)
+	        return;
 		CroCoLogger.getLogger().info("Load root");
 		CroCoNode<NetworkMetaInformation> rootNode = null;
+		
 		try{
 			CroCoNode<NetworkMetaInformation> root = service.getNetworkOntology(true);
 			this.origRoot = root;

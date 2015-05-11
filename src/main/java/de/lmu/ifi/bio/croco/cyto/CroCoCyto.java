@@ -2,6 +2,7 @@ package de.lmu.ifi.bio.croco.cyto;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Container;
 import java.awt.Cursor;
 import java.awt.Dialog.ModalityType;
 import java.awt.Dimension;
@@ -32,8 +33,10 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
+import javax.swing.JSeparator;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
+import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.WindowConstants;
 import javax.swing.event.TreeModelEvent;
@@ -66,6 +69,15 @@ import org.slf4j.LoggerFactory;
 import de.lmu.ifi.bio.croco.connector.BufferedService;
 import de.lmu.ifi.bio.croco.connector.QueryService;
 import de.lmu.ifi.bio.croco.connector.RemoteWebService;
+import de.lmu.ifi.bio.croco.cyto.converter.CytoscapeTransformer;
+import de.lmu.ifi.bio.croco.cyto.ui.Help;
+import de.lmu.ifi.bio.croco.cyto.ui.NetworkInfoList;
+import de.lmu.ifi.bio.croco.cyto.ui.NetworkOperatorTree;
+import de.lmu.ifi.bio.croco.cyto.ui.NetworkOperatorTreeNode;
+import de.lmu.ifi.bio.croco.cyto.ui.NetworkSummaryDialog;
+import de.lmu.ifi.bio.croco.cyto.ui.NetworkTree;
+import de.lmu.ifi.bio.croco.cyto.ui.NetworkTree.NetworkHierachyTreeNode;
+import de.lmu.ifi.bio.croco.cyto.util.CytoscapeProperties;
 import de.lmu.ifi.bio.croco.data.CroCoNode.GeneralFilter;
 import de.lmu.ifi.bio.croco.data.Entity;
 import de.lmu.ifi.bio.croco.data.NetworkMetaInformation;
@@ -90,15 +102,6 @@ import de.lmu.ifi.bio.croco.operation.progress.ProgressInformation;
 import de.lmu.ifi.bio.croco.operation.progress.ProgressListener;
 import de.lmu.ifi.bio.croco.util.CroCoLogger;
 import de.lmu.ifi.bio.croco.util.CroCoProperties;
-import de.lmu.ifi.bio.croco.cyto.converter.CytoscapeTransformer;
-import de.lmu.ifi.bio.croco.cyto.ui.Help;
-import de.lmu.ifi.bio.croco.cyto.ui.NetworkInfoList;
-import de.lmu.ifi.bio.croco.cyto.ui.NetworkOperatorTree;
-import de.lmu.ifi.bio.croco.cyto.ui.NetworkOperatorTreeNode;
-import de.lmu.ifi.bio.croco.cyto.ui.NetworkSummaryDialog;
-import de.lmu.ifi.bio.croco.cyto.ui.NetworkTree;
-import de.lmu.ifi.bio.croco.cyto.ui.NetworkTree.NetworkHierachyTreeNode;
-import de.lmu.ifi.bio.croco.cyto.util.CytoscapeProperties;
 
 /**
  * Main view of the croco-cyto plug-in.
@@ -143,15 +146,11 @@ public class CroCoCyto extends AbstractWebServiceGUIClient  implements NetworkIm
 	 */
 	private void init() throws Exception{
 
-		JPanel mainPanel = (JPanel) gui;
-		mainPanel.setPreferredSize(new Dimension (900,640));
-		mainPanel.setLayout (new BorderLayout());
-
-		JPanel view = new JPanel(new MigLayout());
+		gui.setLayout(new MigLayout());
+		gui.setPreferredSize(new Dimension(920,740));
 		
 		final JPanel content = new JPanel(new MigLayout());
-		JPanel connectionPane = new JPanel(new MigLayout());
-		connectionPane.add(new JLabel("CroCo web service:"));
+		final JPanel connectionPane = new JPanel(new MigLayout());
 		final JTextField connectionField = new JTextField();
         final JTextField bufferDir = new JTextField();
 
@@ -167,7 +166,6 @@ public class CroCoCyto extends AbstractWebServiceGUIClient  implements NetworkIm
 		}
 		
 		
-		connectionPane.add(connectionField,"gapleft 30, width 500, grow");
 		
 		JButton connectBtn = new JButton("Connect");
 		
@@ -203,7 +201,6 @@ public class CroCoCyto extends AbstractWebServiceGUIClient  implements NetworkIm
                     LoggerFactory.getLogger(getClass()).info("Service version:" + version);
 
 			        service = new BufferedService(remoteService, buffer );
-			        //TODO: check for version!
 					
 				}catch(Exception ex){
 				    ex.printStackTrace();
@@ -211,17 +208,22 @@ public class CroCoCyto extends AbstractWebServiceGUIClient  implements NetworkIm
 					LoggerFactory.getLogger(getClass()).error(ex.getMessage());
 					return;
 				}
+				gui.remove(connectionPane);
+				gui.remove(content);
+				createNetworkView(gui);
 				
-				content.removeAll();
-				createNetworkView(content);
-				content.revalidate();
+                
+                gui.revalidate();
+                gui.repaint();
+                
+                //content.revalidate();
 			}
 			
 		});
-		connectionPane.add(connectBtn,"gapleft 15");
+		
 		JButton help = new JButton("Help");
 		
-		connectionPane.add(help,"gapleft 50,wrap");
+	
 		help.addActionListener(new ActionListener(){
 
 			@Override
@@ -235,34 +237,39 @@ public class CroCoCyto extends AbstractWebServiceGUIClient  implements NetworkIm
 			
 		
 		});
+		JLabel info =new JLabel("<html><font color='#AA000000'>Note, the first connection attempt to the croco-repo may take a few minutes.</font></html>");
+        
+		connectionPane.add(new JLabel("CroCo web-service:"));
+		connectionPane.add(connectionField,"gapleft 30, width 520");
+		connectionPane.add(connectBtn,"grow");
+		connectionPane.add(help,"align right,gapleft 50,wrap");
+        
+		
 		connectionPane.add(new JLabel("Buffer dir:"));
-        
-		connectionPane.add(bufferDir,"gapleft 30, width 500, grow,wrap");
-        
-		JLabel info =new JLabel("<html><font color='#AA000000'>The first connection attempt to the croco-repo may take a few minutes.</font></html>");
-		connectionPane.add(info,"span,center,wrap");
+		connectionPane.add(bufferDir,"gapleft 30, width 520");
+	    connectionPane.add(info,"grow,span 3");
 		connectionPane.setBorder(BorderFactory.createEtchedBorder());
-		view.add(connectionPane,"span,wrap");
-		view.add(content);
+		
+		
+		gui.add(connectionPane,"wrap");
+		gui.add(content);
+		
 		if ( startUpImage != null){
 			JLabel imgStartUplnl = new JLabel();
 			imgStartUplnl.setIcon(new ImageIcon(startUpImage));
 			content.add(imgStartUplnl,"gapleft 175");
 		}
-		    
-	     mainPanel.add(view, BorderLayout.CENTER);     
-	        
+		
 	 }
 
-	 public void createNetworkView(JPanel view){
+	 public void createNetworkView(Container view){
 	
 		 
 		 
 		 final NetworkTree networkTree = new NetworkTree(service);
 
-		 JScrollPane scrp = new JScrollPane(networkTree);
-		 view.add(new JLabel("<html><p style='font-size:1.2em'>croco-repo</p></html>"));
-		 view.add(new JLabel("<html><p style='font-size:1.2em'>Network details</p></html>"));
+		 JScrollPane scrpNetworkTree = new JScrollPane(networkTree);
+	
 		 JLabel example = new JLabel("<HTML><FONT color=\"#000099\"><U>Load example</U></FONT></HTML>");
 		 example.setOpaque(false);
 		 example.setBackground(Color.WHITE);
@@ -270,24 +277,27 @@ public class CroCoCyto extends AbstractWebServiceGUIClient  implements NetworkIm
 		 example.setCursor(new Cursor(Cursor.HAND_CURSOR));
 		 example.setToolTipText("Common network inferred from Mouse MEL and Human K562 open chromatin networks");
 		 
-		 view.add(example, "align right,wrap");
+		 //view.add(example, "align right,wrap");
 		 
-		 view.add(scrp, "width 500, height 500");
+		
 		 final JLabel image = new JLabel();
 		 
 		 final NetworkInfoList networkInfo = new NetworkInfoList(service);
-		 JPanel infoView = new JPanel(new MigLayout()); 
-		 infoView.add(networkInfo,"width 370, wrap");
-		 infoView.add(image,"wrap");
 		 
-		 JScrollPane scrp2 = new JScrollPane(infoView);
-		  view.add(scrp2,"width 400, height 500, span 2,wrap");
+		 JPanel infoView = new JPanel(new MigLayout("insets 0")); 
+		 infoView.add(networkInfo,"grow,wrap");
+		 infoView.add(image);
+		 
+		 JScrollPane scrpInfo = new JScrollPane(infoView);
+	
 		 
 		  
 		  final NetworkOperatorTree operations = new NetworkOperatorTree(service);
-		  JScrollPane scrp3 = new JScrollPane(operations);
+		  JScrollPane scrpOperatorTree = new JScrollPane(operations);
 		  JPanel operationsView = new JPanel();
-	
+		  operationsView.setBorder(BorderFactory.createEtchedBorder());
+	        
+		  
 		  List<Class<? extends GeneralOperation>> possibleOperations = new ArrayList<Class<? extends GeneralOperation>>();
 		  possibleOperations.add(Union.class);
 		  possibleOperations.add(Intersect.class);
@@ -298,17 +308,28 @@ public class CroCoCyto extends AbstractWebServiceGUIClient  implements NetworkIm
 		  operationsView.setLayout(new MigLayout());
 		  
 		  CroCoLogger.getLogger().info("Register operations");
-		  JScrollPane scrp4 = new JScrollPane(operationsView);
-		  view.add(new JLabel("Network Selection List"));
-		  view.add(new JLabel("Network Operation Panel"),"wrap");
+		  JScrollPane scrpOperations = new JScrollPane(operationsView);
+
+		  view.add(new JLabel("<html><p style='font-size:1.0em'><b>croco-repo</b></p></html>"),"growx");
+		  view.add(example, "align right,span 2,wrap");
+		  view.add(scrpNetworkTree, "width 900,height 450,span 3,wrap");
+		 
+		  view.add(new JLabel("<html><p style='font-size:1.0em'><b>Network details<br></p></html>"));
+		  view.add(new JLabel("<html><b>Network Selection List</b></html>"));
+          view.add(new JLabel("<html><b>Operations</b></html>"),"wrap");
+          
 		  
-		  view.add(scrp3,"width 500, height 400,");
-		  view.add(scrp4,",width 220,height 400");
+		  view.add(scrpInfo,"height 250, width 240");
+		  view.add(scrpOperatorTree,"width 500, height 250");
+		  view.add(operationsView,"growx,height 250");
+          
+		  //
+		  //
 		  
-		  final JButton okButton = new JButton("Produce final network");
+		  final JButton okButton = new JButton("<html><FONT color=\"#FF2211\"><b>Create Final Network</b></font></html>");
 		  okButton.setEnabled(false);
 		  okButton.setToolTipText("Select networks from the croco-repo and drop them into the network selection list");
-		  view.add(okButton,"align right,grow,wrap");
+		  //view.add(okButton,"align right,grow,wrap");
 		  
 		
 		  //load the example with operations and networks
@@ -458,7 +479,7 @@ public class CroCoCyto extends AbstractWebServiceGUIClient  implements NetworkIm
 			  }else if ( possibleOperation == GeneSetFilter.class){
 				  operation.setToolTipText("Adds the Gene Set Filter operation");
 			  }
-			  operationsView.add(operation,"grow,center, wrap");
+			  operationsView.add(operation,"grow, wrap");
 			
 			  operation.addActionListener(new ActionListener(){
 
@@ -553,11 +574,9 @@ public class CroCoCyto extends AbstractWebServiceGUIClient  implements NetworkIm
 				  }
 
 			  });
-
-			  
-
-
 		  }
+
+          operationsView.add(okButton);
 		  
 	
 		  
@@ -761,7 +780,7 @@ public class CroCoCyto extends AbstractWebServiceGUIClient  implements NetworkIm
 			e.printStackTrace();
 		}
 		if ( img != null){
-		  img = img.getScaledInstance(360, 360, Image.SCALE_SMOOTH);
+		  img = img.getScaledInstance(200, 200, Image.SCALE_SMOOTH);
 			
 		 image.setIcon(new ImageIcon(img));
 		}
