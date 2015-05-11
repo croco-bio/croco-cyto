@@ -1,16 +1,16 @@
 General
 =========
-CroCo provides a new view on regulatory networks (transcription factor-target) for many species derived from context-specific ENCODE projects, the scientific literature and structured databases. Networks can be easily retrieved from a remote croco network repository (croco-repo) and combined via many networks operations.
+CroCo provides a network-oriented view on regulatory data for many context-specific ENCODE projects, the scientific literature and structured databases. Networks can be easily retrieved from a remote network repository (croco-repo) and combined via many networks operations.
 
-consists of five components:
+CroCo consists of five components:
 
-1. a network repository croco-repo,
+1. a network repository: croco-repo,
 2. an Application Programming Interface (API): croco-api
 3. a Cytoscape plug-in: croco-cyto
 4. a web application: croco-web
 5. a web-service for remote access to the central repository: croco-service
 
-See also: http://services.bio.ifi.lmu.de/croco-web/
+See also: https://services.bio.ifi.lmu.de/croco-web/
 
 croco-cyto
 =========
@@ -27,7 +27,7 @@ see http://services.bio.ifi.lmu.de/croco-web for latest (stable) build.
 * Start Cytoscape (tested with Cytoscape 3.2.1)
 * Select: File/Import/Network/Public database
 * Select: Data Source: croco-cyto
-* Insert the web-service URL: http://services.bio.ifi.lmu.de/croco-web/services/
+* Insert the web-service URL: https://services.bio.ifi.lmu.de/croco-web/services/
 * Click on: connect
 * Browse the ontology and select networks of interest from the croco-repo and drag them into the selection list
 * Click on Union/Intersect/... to add a network operation.
@@ -38,7 +38,7 @@ see http://services.bio.ifi.lmu.de/croco-web for latest (stable) build.
 croco-cyto build (from source)
 =========
 
-Install
+Install:
 mvn install -Dmaven.test.skip=true
 
 The install command creates a bundles jar with all dependencies.
@@ -52,5 +52,5 @@ The newest source code may not always be compatible with the remote croco instan
 
 Contact & Bug-reports & Suggestions
 =========
-We are constantly improving the croco components. So if you find any bugs, or have general suggestions/comments, please send a mail to: robert.pesch@bio.ifi.lmu.de
+robert.pesch@bio.ifi.lmu.de
 
