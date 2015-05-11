@@ -143,7 +143,7 @@ public class NetworkOperatorTree extends JTree implements DropTargetListener,Dra
 				    {
 				        tmp.add(treeNode.getOperatorable());
 				    }
-				    showTransferDialog(root,tmp);
+				    transferNetworks(root,tmp);
 				}
 			});
 			JMenuItem setContext = new JMenuItem("Gene Ontology context");
@@ -169,7 +169,7 @@ public class NetworkOperatorTree extends JTree implements DropTargetListener,Dra
 		}
 	}
 	
-	private void showTransferDialog(NetworkOperatorTreeNode root,List<NetworkOperationNode> selectedNodes)
+	private void transferNetworks(NetworkOperatorTreeNode root,List<NetworkOperationNode> selectedNodes)
 	{
 	    
 	    List<OrthologMappingInformation> orthologMappings = null;
@@ -265,24 +265,10 @@ public class NetworkOperatorTree extends JTree implements DropTargetListener,Dra
 	 * @param tree
 	 * @param expand
 	 */
-	public void expandAll( boolean expand) {
-		Stack<TreeNode> stack = new Stack<TreeNode>();
-		stack.add((NetworkOperatorTreeNode)this.getModel().getRoot());
-		TreePath path =null;
-		while(!stack.isEmpty()){
-
-			TreeNode top = stack.pop();
-			if ( path == null)
-				path = new TreePath(top);
-			else{
-				path = path.pathByAddingChild(top);
-				this.expandPath(path);
-			}
-			for(int i = 0 ; i <top.getChildCount();i++){
-				stack.add((NetworkOperatorTreeNode) top.getChildAt(i));
-			}
-		}
-		
+	public void expand() {
+	    for (int i = 0; i < this.getRowCount(); i++) {
+	         this.expandRow(i);
+	    }
 
 	}
 
@@ -297,7 +283,7 @@ public class NetworkOperatorTree extends JTree implements DropTargetListener,Dra
 	}
 
 	public NetworkOperatorTree(QueryService service){
-		DropTarget target = new DropTarget(this, this); 
+		
 		root = new NetworkOperatorTreeNode(new NetworkOperationNode());
 		model = new DefaultTreeModel(root);
 		this.service = service;
@@ -308,6 +294,8 @@ public class NetworkOperatorTree extends JTree implements DropTargetListener,Dra
 	   // setCellRenderer(new NetworkTreeRenderer());
 		this.setModel(model);
 
+		new DropTarget(this,this);
+		
 		MouseListener ml = new MouseAdapter() {
 		     public void mousePressed(MouseEvent e) {
 		    	 if ( e.getButton() != MouseEvent.BUTTON1 && NetworkOperatorTree.this.getSelectedNetworkOperatorTreeNode().size() > 0){ //right click? Button2?
@@ -454,6 +442,7 @@ public class NetworkOperatorTree extends JTree implements DropTargetListener,Dra
 			}
 			
 		}
+		model.reload();
 	}
 	private NetworkOperationNode getNetworkOperationNode(NetworkMetaInformation nh)
 	{
@@ -519,6 +508,7 @@ public class NetworkOperatorTree extends JTree implements DropTargetListener,Dra
 	
 	@Override
 	public void drop(DropTargetDropEvent e) {
+	    
 		Transferable tr = e.getTransferable();
 		if (tr.isDataFlavorSupported( NetworkMetaInformationTransferable.INFO_FLAVOR) ) { //moving networks
 			try {
@@ -549,7 +539,7 @@ public class NetworkOperatorTree extends JTree implements DropTargetListener,Dra
 		            {
 		                nops.add(getNetworkOperationNode(newNode));
 		            }
-		            this.showTransferDialog(selectedRoot,nops);
+		            transferNetworks(selectedRoot,nops);
 		            updateRoot(selectedRoot.getOperatorable());
 		        }else{
 		            addNetworks(n,selectedRoot);
@@ -625,6 +615,7 @@ public class NetworkOperatorTree extends JTree implements DropTargetListener,Dra
 	}
 	@Override
 	public void dragEnter(DragSourceDragEvent e) {
+	    
 	//	DragSourceContext context = e.getDragSourceContext();  
 	//	context.setCursor(DragSource.DefaultMoveDrop);    
 		/*

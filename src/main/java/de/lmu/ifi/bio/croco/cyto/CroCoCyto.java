@@ -8,6 +8,7 @@ import java.awt.Dialog.ModalityType;
 import java.awt.Dimension;
 import java.awt.Image;
 import java.awt.Rectangle;
+import java.awt.dnd.DropTarget;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
@@ -132,7 +133,7 @@ public class CroCoCyto extends AbstractWebServiceGUIClient  implements NetworkIm
 	
 	
 	public CroCoCyto(BundleContext context) throws Exception {
-		super("http://services.bio.ifi.lmu.de/croco", "CroCo-Cyto",description );
+		super("https://services.bio.ifi.lmu.de/croco", "CroCo-Cyto",description );
 		LoggerFactory.getLogger(getClass()).info("Init web service client");
 		gui = new JPanel();
 		
@@ -147,7 +148,7 @@ public class CroCoCyto extends AbstractWebServiceGUIClient  implements NetworkIm
 	private void init() throws Exception{
 
 		gui.setLayout(new MigLayout());
-		gui.setPreferredSize(new Dimension(920,740));
+		gui.setPreferredSize(new Dimension(920,640));
 		
 		final JPanel content = new JPanel(new MigLayout());
 		final JPanel connectionPane = new JPanel(new MigLayout());
@@ -297,6 +298,8 @@ public class CroCoCyto extends AbstractWebServiceGUIClient  implements NetworkIm
 		  JPanel operationsView = new JPanel();
 		  operationsView.setBorder(BorderFactory.createEtchedBorder());
 	        
+		 // DropTarget target1 = new DropTarget(operations, operations); 
+		 // DropTarget target2 = new DropTarget(networkTree, operations); 
 		  
 		  List<Class<? extends GeneralOperation>> possibleOperations = new ArrayList<Class<? extends GeneralOperation>>();
 		  possibleOperations.add(Union.class);
@@ -305,6 +308,7 @@ public class CroCoCyto extends AbstractWebServiceGUIClient  implements NetworkIm
 		  possibleOperations.add(Difference.class);
 		  possibleOperations.add(GeneSetFilter.class);
 		  
+		  new DropTarget(networkTree,operations);
 		  operationsView.setLayout(new MigLayout());
 		  
 		  CroCoLogger.getLogger().info("Register operations");
@@ -377,7 +381,7 @@ public class CroCoCyto extends AbstractWebServiceGUIClient  implements NetworkIm
 			            intersect.addChild(k562Interest);
 			            operations.addNode(intersect);
 			            
-			            operations.expandAll(true);
+			            operations.expand();
 					}catch(Exception ex){
 						LoggerFactory.getLogger(CroCoCyto.class).error(ex.toString());
 						JOptionPane.showMessageDialog(null, String.format("Could not load example (%s)",ex.toString()),"Error",  JOptionPane.WARNING_MESSAGE);

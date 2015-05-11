@@ -20,8 +20,7 @@ public class NetworkMetaInformationTransferable implements Transferable {
 	}
 	
 	@Override
-	public Object getTransferData(DataFlavor flavor)
-throws UnsupportedFlavorException {
+	public Object getTransferData(DataFlavor flavor) throws UnsupportedFlavorException {
 
 		if(!isDataFlavorSupported(flavor))
 			throw new UnsupportedFlavorException(flavor);

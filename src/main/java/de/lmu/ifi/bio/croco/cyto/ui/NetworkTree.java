@@ -153,7 +153,7 @@ public class NetworkTree extends JTree implements TreeSelectionListener,DragGest
 		
 		this.addTreeSelectionListener(this);
 		dragSource = new DragSource();
-		dragSource.createDefaultDragGestureRecognizer(this,DnDConstants.ACTION_MOVE, this);
+		dragSource.createDefaultDragGestureRecognizer(this,DnDConstants.ACTION_COPY, this);
 
 
 		this.setRootVisible(false);
@@ -244,10 +244,11 @@ public class NetworkTree extends JTree implements TreeSelectionListener,DragGest
 	}
 	@Override
 	public void dragEnter(DragSourceDragEvent e) {
-
+	    
 	}
 	@Override
 	public void dragOver(DragSourceDragEvent dsde) {
+	    
 	}
 	@Override
 	public void dropActionChanged(DragSourceDragEvent dsde) {
