@@ -189,6 +189,7 @@ public class CroCoCyto extends AbstractWebServiceGUIClient  implements NetworkIm
 				}
 				
 				try{
+                    LoggerFactory.getLogger(getClass()).info("Connect to:" + url);
 				    
 			        RemoteWebService remoteService = new RemoteWebService(url);
                     Long version = remoteService.getRemoteVersion();
@@ -211,7 +212,7 @@ public class CroCoCyto extends AbstractWebServiceGUIClient  implements NetworkIm
 				}
 				gui.remove(connectionPane);
 				gui.remove(content);
-				createNetworkView(gui);
+				createNetworkView(gui,url);
 				
                 
                 gui.validate();
@@ -263,7 +264,7 @@ public class CroCoCyto extends AbstractWebServiceGUIClient  implements NetworkIm
 		
 	 }
 
-	 public void createNetworkView(Container view){
+	 public void createNetworkView(Container view, String url){
 	
 		 
 		 
@@ -277,6 +278,13 @@ public class CroCoCyto extends AbstractWebServiceGUIClient  implements NetworkIm
 		 example.setForeground(Color.BLUE);
 		 example.setCursor(new Cursor(Cursor.HAND_CURSOR));
 		 example.setToolTipText("Common network inferred from Mouse MEL and Human K562 open chromatin networks");
+		 
+		 JLabel disconnect = new JLabel("<HTML><FONT color=\"#000099\"><U>Disconnect</U></FONT></HTML>");
+		 disconnect.setOpaque(false);
+		 disconnect.setBackground(Color.WHITE);
+		 disconnect.setForeground(Color.BLUE);
+		 disconnect.setCursor(new Cursor(Cursor.HAND_CURSOR));
+         
 		 
 		 //view.add(example, "align right,wrap");
 		 
@@ -307,15 +315,20 @@ public class CroCoCyto extends AbstractWebServiceGUIClient  implements NetworkIm
 		  possibleOperations.add(SupportFilter.class);
 		  possibleOperations.add(Difference.class);
 		  possibleOperations.add(GeneSetFilter.class);
+
+		  JPanel disEx = new JPanel();
+		  disEx.add(disconnect);
+		  disEx.add(example);
+          
 		  
 		  new DropTarget(networkTree,operations);
 		  operationsView.setLayout(new MigLayout());
 		  
 		  CroCoLogger.getLogger().info("Register operations");
-		  JScrollPane scrpOperations = new JScrollPane(operationsView);
 
-		  view.add(new JLabel("<html><p style='font-size:1.0em'><b>croco-repo</b></p></html>"),"growx");
-		  view.add(example, "align right,span 2,wrap");
+		  view.add(new JLabel(String.format("<html><p style='font-size:1.0em'><b>croco-repo: %s</b></p></html>",url.trim())),"span 2");
+		  
+		  view.add(disEx, "align right,wrap");
 		  view.add(scrpNetworkTree, "width 900,height 450,span 3,wrap");
 		 
 		  view.add(new JLabel("<html><p style='font-size:1.0em'><b>Network details<br></p></html>"));
@@ -335,6 +348,24 @@ public class CroCoCyto extends AbstractWebServiceGUIClient  implements NetworkIm
 		  okButton.setToolTipText("Creates the defined networks and imports them into Cytoscape.");
 		  //view.add(okButton,"align right,grow,wrap");
 		  
+		  
+		  disconnect.addMouseListener(new MouseAdapter()
+		  {
+              @Override
+              public void mouseClicked(MouseEvent e) {
+                  try {
+                      gui.removeAll();
+                      
+                      init();
+                      
+                      gui.validate();
+                      gui.repaint();
+                } catch (Exception e1) {
+                    // TODO Auto-generated catch block
+                    e1.printStackTrace();
+                }
+              }
+		  });
 		
 		  //load the example with operations and networks
 	      example.addMouseListener(new MouseAdapter() {
