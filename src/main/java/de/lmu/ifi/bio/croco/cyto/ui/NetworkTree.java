@@ -103,7 +103,7 @@ public class NetworkTree extends JTree implements TreeSelectionListener,DragGest
 	    @Override
 	    public String toString(){
 	        if ( this.operatorable == null) return "<<null>>";
-	        return this.operatorable.toString();
+	        return this.operatorable.getName() + " (" + this.operatorable.getData().size() + " networks)";
 	    }
 	    
 	    @Override
