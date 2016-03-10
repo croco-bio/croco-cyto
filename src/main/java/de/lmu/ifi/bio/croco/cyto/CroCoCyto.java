@@ -377,8 +377,8 @@ public class CroCoCyto extends AbstractWebServiceGUIClient  implements NetworkIm
 						Transfer transferOperation = new Transfer();
 		            	transferOperation.setInput(Transfer.OrthologMappingInformation,service.getOrthologMappingInformation(null, Species.Human, Species.Mouse));
 		    			transferOperation.setInput(Transfer.OrthologRepository,OrthologRepository.getInstance(service));
-		            	
-		            	NetworkOperationNode transfer = new NetworkOperationNode(parent,Species.Human.getTaxId(),transferOperation);
+		            	System.out.println("T");
+		    			NetworkOperationNode transfer = new NetworkOperationNode(parent,Species.Human.getTaxId(),transferOperation);
 		            	
 		            	LoggerFactory.getLogger(CroCoCyto.class).error("Read MEL");
                         
@@ -414,6 +414,7 @@ public class CroCoCyto extends AbstractWebServiceGUIClient  implements NetworkIm
 			            
 			            operations.expand();
 					}catch(Exception ex){
+					    ex.printStackTrace();
 						LoggerFactory.getLogger(CroCoCyto.class).error(ex.toString());
 						JOptionPane.showMessageDialog(null, String.format("Could not load example (%s)",ex.toString()),"Error",  JOptionPane.WARNING_MESSAGE);
 					}
@@ -587,6 +588,8 @@ public class CroCoCyto extends AbstractWebServiceGUIClient  implements NetworkIm
 				                    null,
 				                    null,
 				                    "10");
+							if ( ret == null)
+							    return;
 							Integer filter = null;
 							try{
 								filter = Integer.valueOf(ret);

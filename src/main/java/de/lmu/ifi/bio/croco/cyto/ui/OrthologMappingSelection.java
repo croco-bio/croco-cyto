@@ -123,14 +123,15 @@ public class OrthologMappingSelection extends JDialog{
 	
 	}
 	*/
-	public OrthologMappingSelection(         List<OrthologMappingInformation> orthologMappings,Set<Species> selectedSpecies){
+	
+	public OrthologMappingSelection( List<OrthologMappingInformation> orthologMappings,Set<Species> selectedSpecies){
 		super((JFrame)null,"Ortholog Mapping Selection",true);
 		this.selectedSpecies = selectedSpecies;
 		this.orthologMappings = orthologMappings;
 		
 	}
 	
-	public OrthologMappingSelection(         List<OrthologMappingInformation> orthologMappings ,Species ... selectedSpecie){
+	public OrthologMappingSelection(List<OrthologMappingInformation> orthologMappings ,Species ... selectedSpecie){
         super((JFrame)null,"Ortholog Mapping Selection",true);
         this.selectedSpecies = new HashSet<Species>();
         this.orthologMappings = orthologMappings;
@@ -156,6 +157,8 @@ public class OrthologMappingSelection extends JDialog{
 	    
 		OrthologMappingSelection s = new OrthologMappingSelection(mappings,Species.Mouse,Species.Fly);
 		s.showDialog();
+		
+		System.out.println(s.getSelectedTargetSpecies());
 	
 	}
 	public Species getSelectedTargetSpecies()
@@ -250,7 +253,7 @@ public class OrthologMappingSelection extends JDialog{
 		    
 			toSpecies.setModel(new SpeciesSelectionComboBoxModel(targetSpecies,Species.knownSpecies,true));
 			
-			this.targetSpecies = this.selectedSpecies.iterator().next();
+			this.targetSpecies = (Species) toSpecies.getModel().getElementAt(0);
 		}catch(Exception e){
 			throw new RuntimeException("Error from queryservice",e);
 		}
