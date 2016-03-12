@@ -3,10 +3,11 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
 	<properties>
-		<bundle.symbolicName>de.lmu.ifi.bio.croco.cyto</bundle.symbolicName>
+		<bundle.symbolicName>croco-cyto</bundle.symbolicName>
 		<bundle.namespace>de.lmu.ifi.bio.croco.cyto</bundle.namespace>
 		<jdk.version>1.6</jdk.version>
 		<junit.version>4.11</junit.version>
+		<cytoscape.version>3.0.0</cytoscape.version>
 	</properties>
 
 	<modelVersion>4.0.0</modelVersion>
@@ -142,35 +143,51 @@
 		<dependency>
 			<groupId>org.cytoscape</groupId>
 			<artifactId>layout-api</artifactId>
-			<version>3.0.0</version>
+			<version>${cytoscape.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.cytoscape</groupId>
 			<artifactId>layout-cytoscape-impl</artifactId>
-			<version>3.0.0</version>
+			<version>${cytoscape.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.cytoscape</groupId>
 			<artifactId>layout-impl</artifactId>
-			<version>3.0.0</version>
+			<version>${cytoscape.version}</version>
 		</dependency>
 
 
 		<dependency>
 			<groupId>org.cytoscape</groupId>
 			<artifactId>service-api</artifactId>
-			<version>3.0.0</version>
+			<version>${cytoscape.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.cytoscape</groupId>
 			<artifactId>swing-application-api</artifactId>
-			<version>3.0.0</version>
+			<version>${cytoscape.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.cytoscape</groupId>
 			<artifactId>session-api</artifactId>
-			<version>3.0.0</version>
+			<version>${cytoscape.version}</version>
 		</dependency>
+		<dependency>
+			<groupId>org.cytoscape</groupId>
+			<artifactId>webservice-api</artifactId>
+			<version>${cytoscape.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.cytoscape</groupId>
+			<artifactId>core-task-api</artifactId>
+			<version>${cytoscape.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.cytoscape</groupId>
+			<artifactId>webservice-swing-api</artifactId>
+			<version>${cytoscape.version}</version>
+		</dependency>
+
 
 		<dependency>
 			<groupId>de.lmu.ifi.bio.croco</groupId>
@@ -197,21 +214,6 @@
 			<groupId>com.thoughtworks.xstream</groupId>
 			<artifactId>xstream</artifactId>
 			<version>1.3.1</version>
-		</dependency>
-		<dependency>
-			<groupId>org.cytoscape</groupId>
-			<artifactId>webservice-api</artifactId>
-			<version>3.0.1</version>
-		</dependency>
-		<dependency>
-			<groupId>org.cytoscape</groupId>
-			<artifactId>core-task-api</artifactId>
-			<version>3.0.1</version>
-		</dependency>
-		<dependency>
-			<groupId>org.cytoscape</groupId>
-			<artifactId>webservice-swing-api</artifactId>
-			<version>3.0.1</version>
 		</dependency>
 
 
